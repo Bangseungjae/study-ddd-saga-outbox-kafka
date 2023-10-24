@@ -24,6 +24,7 @@ class OrderCreateCommandHandler(
     private val customerRepository: CustomerRepository,
     private val restaurantRepository: RestaurantRepository,
     private val orderDataMapper: OrderDataMapper,
+    private val applicationDomainEventPublisher: ApplicationDomainEventPublisher,
 ) {
 
 
@@ -39,6 +40,7 @@ class OrderCreateCommandHandler(
             restaurant = restaurant
         )
         val orderResult = saveOrder(order)
+        applicationDomainEventPublisher.publish(orderCreatedEvent)
         return orderDataMapper.orderToCreateOrderResponse(order)
     }
 
