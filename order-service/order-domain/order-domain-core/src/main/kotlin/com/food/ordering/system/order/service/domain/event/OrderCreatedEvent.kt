@@ -7,5 +7,6 @@ class OrderCreatedEvent(
     order: Order,
     createdAt: ZonedDateTime,
 ) : OrderEvent(
-    order, createdAt
+    order = order,
+    createdAt = createdAt,
 )

@@ -84,7 +84,7 @@ class Order(
 
 
     private fun validateTotalPrice() {
-        if (price.isGreaterThanZero()) {
+        if (!price.isGreaterThanZero()) {
             throw OrderDomainException("Total price must be greater than zero!")
         }
     }

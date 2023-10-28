@@ -7,8 +7,8 @@ import java.math.BigDecimal
 
 class Product(
     productId: ProductId,
-    var name: String? = "",
-    var price: Money? = Money(BigDecimal.ZERO),
+    var name: String = "",
+    var price: Money = Money(BigDecimal.ZERO),
 ) : BaseEntity<ProductId>(productId) {
     fun updateWithConfirmedNameAndPrice(name: String, price: Money) {
         this.name = name
