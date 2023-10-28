@@ -13,8 +13,6 @@ allOpen {
 
 
 dependencies {
-    implementation(project(":order-service:order-domain:order-application-service"))
-    implementation(project(":common:common-domain"))
 
     // JPA
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")

@@ -1,7 +1,7 @@
 package com.food.ordering.system.order.service.domain
 
-import food.ordering.system.order.service.domain.dto.message.RestaurantApprovalResponse
-import food.ordering.system.order.service.domain.ports.input.message.listener.restaurantapproval.RestaurantApprovalResponseMessageListener
+import com.food.ordering.system.order.service.domain.dto.message.RestaurantApprovalResponse
+import com.food.ordering.system.order.service.domain.ports.input.message.listener.restaurantapproval.RestaurantApprovalResponseMessageListener
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 

@@ -1,0 +1,54 @@
+import com.github.davidmc24.gradle.plugin.avro.GenerateAvroJavaTask
+
+plugins {
+    id 'java'
+    id "com.github.davidmc24.gradle.plugin.avro" version "1.0.0"
+}
+
+ext {
+    avroVersion = "1.11.3"
+}
+
+repositories {
+    mavenCentral()
+    gradlePluginPortal()
+    maven { url "https://packages.confluent.io/manven/" }
+    maven { url "https://plugins.gradle.org/m2/"}
+    maven { url "https://jitpack.io" }
+}
+
+dependencies {
+    implementation "org.apache.avro:avro:${avroVersion}"
+    implementation "org.apache.avro:avro-tools:${avroVersion}"
+
+    //avro-serializer
+    implementation "io.confluent:kafka-avro-serializer:5.5.1"
+}
+
+//def GenerateAvroProtocolTask = tasks.register("GenerateAvroProtocolTask", GenerateAvroProtocolTask) {
+//    source("src/avro")
+//    outputDir = file("src/main/java/com/food/ordering/system/kafka/ordering/avro/model")
+//}
+//
+def generateAvro = tasks.register("generateAvro", GenerateAvroJavaTask) {
+    source("src/main/avro")
+    outputDir = file("src/main/java/com/food/ordering/system/kafka/ordering/avro/model")
+}
+
+tasks.named("compileJava").configure {
+    source(generateAvro)
+}
+//
+//compileJava.source(generateAvro.output)
+//
+//tasks.named("GenerateAvroJavaTask").configure {
+//    source(GenerateAvroJavaTask)
+//}
+
+//tasks.generateAvro(type: GenerateAvroJavaTask) {
+//    source("src/avro")
+//    outputDir = file("src/main/java/com/food/ordering/system/kafka/ordering/avro/model")
+//}
+//compileJava.source(generateAvro.outputs)
+
+//var outputDir = file("src/main/java/com/food/ordering/system/kafka/ordering/avro/model")

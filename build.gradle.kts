@@ -109,5 +109,26 @@ project(":infrastructure:kafka:kafka-model") {
         implementation("org.apache.avro:avro:$avro_version")
         implementation("org.apache.avro:avro-maven-plugin:$avro_version")
     }
+}
 
+
+project(":order-service:order-domain:order-application-service") {
+    dependencies {
+        implementation(project(":order-service:order-domain:order-domain-core"))
+        implementation(project(":common:common-domain"))
+    }
+}
+
+project(":order-service:order-domain:order-domain-core") {
+    dependencies {
+        implementation(project(":common:common-domain"))
+    }
+}
+
+project(":order-service:order-dataaccess") {
+    dependencies {
+        implementation(project(":common:common-domain"))
+        implementation(project(":order-service:order-domain:order-application-service"))
+        implementation(project(":order-service:order-domain:order-domain-core"))
+    }
 }

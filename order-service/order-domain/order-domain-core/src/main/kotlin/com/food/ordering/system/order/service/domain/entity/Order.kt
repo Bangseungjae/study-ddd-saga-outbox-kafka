@@ -11,7 +11,7 @@ class Order(
     orderId: OrderId = OrderId(UUID.randomUUID()),
     val customerId: CustomerId,
     val restaurantId: RestaurantId,
-    val streetAddress: StreetAddress,
+    val deliveryAddress: StreetAddress,
     val price: Money,
     val items: List<OrderItem>,
 

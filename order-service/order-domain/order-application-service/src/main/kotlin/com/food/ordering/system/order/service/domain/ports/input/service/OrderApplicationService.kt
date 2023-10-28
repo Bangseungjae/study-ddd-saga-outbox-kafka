@@ -1,9 +1,10 @@
 package com.food.ordering.system.order.service.domain.ports.input.service
 
-import food.ordering.system.order.service.domain.dto.create.CreateOrderCommand
-import food.ordering.system.order.service.domain.dto.create.CreateOrderResponse
-import food.ordering.system.order.service.domain.dto.track.TrackOrderQuery
-import food.ordering.system.order.service.domain.dto.track.TrackOrderResponse
+import com.food.ordering.system.order.service.domain.dto.create.CreateOrderCommand
+import com.food.ordering.system.order.service.domain.dto.create.CreateOrderResponse
+import com.food.ordering.system.order.service.domain.dto.track.TrackOrderQuery
+import com.food.ordering.system.order.service.domain.dto.track.TrackOrderResponse
+
 
 interface OrderApplicationService {
 
