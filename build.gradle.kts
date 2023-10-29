@@ -7,7 +7,6 @@ plugins {
     kotlin("plugin.spring") version "1.8.22" apply false
     kotlin("kapt") version "1.7.22"
     idea
-
 }
 
 

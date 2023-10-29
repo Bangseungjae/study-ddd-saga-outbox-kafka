@@ -1,5 +1,5 @@
 package com.food.ordering.system.domain.valueobject
 
-enum class OrderStatusApproval {
+enum class OrderApprovalStatus {
     APPROVED, REJECTED
 }

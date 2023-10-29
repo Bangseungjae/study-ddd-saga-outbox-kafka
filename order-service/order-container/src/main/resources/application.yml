@@ -27,7 +27,7 @@ spring:
     username: postgres
     password: admin
     driver-class-name: org.postgresql.Driver
-    platform: postgres
+#    platform: postgres
   sql:
     init:
       mode: ALWAYS
