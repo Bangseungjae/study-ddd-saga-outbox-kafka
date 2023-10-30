@@ -1,6 +1,7 @@
 package com.food.ordering.system.order.service.dataaccess.order.entity
 
 import jakarta.persistence.CascadeType
+import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.IdClass
@@ -15,17 +16,15 @@ import java.util.UUID
 @Entity
 class OrderItemEntity(
     @Id
-    val id: UUID,
-
-    @Id
-    @JoinColumn(name = "ORDER_ID")
-
+    var id: UUID,
 
     val productId: UUID,
     val price: BigDecimal,
     val quantity: Int,
     val subTotal: BigDecimal,
 ) {
+    @Id
+    @JoinColumn(name = "ORDER_ID")
     @ManyToOne(cascade = [CascadeType.ALL])
     lateinit var order: OrderEntity
 

@@ -5,31 +5,31 @@ import org.springframework.stereotype.Component
 
 @Component
 data class KafkaProducerConfigData(
-    @Value("$PRODUCER_CONFIG.keySerializerClass")
+    @Value("\${$PRODUCER_CONFIG.key-serializer-class}")
     val keySerializerClass: String,
 
-    @Value("$PRODUCER_CONFIG.valueSerializerClass")
+    @Value("\${$PRODUCER_CONFIG.value-serializer-class}")
     val valueSerializerClass: String,
 
-    @Value("$PRODUCER_CONFIG.compressionType")
+    @Value("\${$PRODUCER_CONFIG.compression-type}")
     val compressionType: String,
 
-    @Value("$PRODUCER_CONFIG.acks")
+    @Value("\${$PRODUCER_CONFIG.acks}")
     val acks: String,
 
-    @Value("$PRODUCER_CONFIG.batchSize")
+    @Value("\${$PRODUCER_CONFIG.batch-size}")
     val batchSize: Int,
 
-    @Value("$PRODUCER_CONFIG.batchSizeBoostFactor")
+    @Value("\${$PRODUCER_CONFIG.batch-size-boost-factor}")
     val batchSizeBoostFactor: Int,
 
-    @Value("$PRODUCER_CONFIG.lingerMs")
+    @Value("\${$PRODUCER_CONFIG.linger-ms}")
     val lingerMs: Int,
 
-    @Value("$PRODUCER_CONFIG.requestTimeoutMs")
+    @Value("\${$PRODUCER_CONFIG.request-timeout-ms}")
     val requestTimeoutMs: Int,
 
-    @Value("$PRODUCER_CONFIG.retryCount")
+    @Value("\${$PRODUCER_CONFIG.retry-count}")
     val retryCount: Int,
 )
 

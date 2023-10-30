@@ -5,8 +5,8 @@ import java.util.UUID
 
 
 class OrderItemEntityId(
-    val id: UUID,
-    val order: OrderEntity,
+    val id: UUID? = null,
+    val order: OrderEntity? = null,
 ) : Serializable{
 
     override fun equals(other: Any?): Boolean {

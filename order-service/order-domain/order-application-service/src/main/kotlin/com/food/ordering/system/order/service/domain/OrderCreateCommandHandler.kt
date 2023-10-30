@@ -26,7 +26,7 @@ class OrderCreateCommandHandler(
     private val applicationDomainEventPublisher: com.food.ordering.system.order.service.domain.ApplicationDomainEventPublisher,
 ) {
 
-    val logger = LoggerFactory.getLogger(this.javaClass)
+    private val logger = LoggerFactory.getLogger(this.javaClass)
 
     @Transactional
     fun createOrder(createOrderCommand: CreateOrderCommand): CreateOrderResponse {

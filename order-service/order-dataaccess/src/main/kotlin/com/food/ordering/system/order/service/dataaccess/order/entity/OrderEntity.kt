@@ -14,6 +14,7 @@ class OrderEntity(
     val restaurantId: UUID,
     val trackingId: UUID,
     val price: BigDecimal,
+
     @Enumerated(EnumType.STRING)
     val orderStatus: OrderStatus,
     val failureMessages: String,

@@ -1,3 +1,5 @@
+import org.springframework.boot.gradle.tasks.bundling.BootJar
+
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework:spring-tx")
@@ -8,3 +10,10 @@ dependencies {
     api(project(":order-service:order-domain:order-domain-core"))
 }
 
+tasks.named<BootJar>("bootJar") {
+    enabled = false
+}
+
+tasks.named<Jar>("jar") {
+    enabled = true
+}

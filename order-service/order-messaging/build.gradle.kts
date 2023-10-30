@@ -25,7 +25,6 @@ dependencies {
 }
 
 tasks.named<BootJar>("bootJar") {
-//    mainClass = "com.food.ordering.system.Application"
     enabled = false
 }
 

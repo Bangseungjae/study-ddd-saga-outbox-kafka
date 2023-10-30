@@ -1,5 +1,6 @@
 package com.food.ordering.system.order.service.dataaccess.restaurant.entity
 
+import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.IdClass
@@ -12,9 +13,11 @@ import java.util.UUID
 @Entity
 class RestaurantEntity(
     @Id
-    val restaurantId: UUID,
+    @Column(name = "restaurant_id")
+    var restaurantId: UUID,
     @Id
-    val productId: UUID,
+    @Column(name = "product_id")
+    var productId: UUID,
 
     val restaurantName: String,
     val restaurantActive: Boolean,

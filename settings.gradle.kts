@@ -1,4 +1,6 @@
 rootProject.name = "food-ordering-system"
+
+// order
 include("order-service")
 include("order-service:order-dataaccess")
 include("order-service:order-domain")
@@ -10,6 +12,7 @@ include("order-service:order-application")
 include("order-service:order-messaging")
 
 
+// common
 include("common")
 include("common:common-domain")
 include("common:common-application")
@@ -19,3 +22,6 @@ include(":infrastructure:kafka:kafka-config-data")
 include(":infrastructure:kafka:kafka-consumer")
 include(":infrastructure:kafka:kafka-model")
 include(":infrastructure:kafka:kafka-producer")
+
+// customer
+include("customer-service")

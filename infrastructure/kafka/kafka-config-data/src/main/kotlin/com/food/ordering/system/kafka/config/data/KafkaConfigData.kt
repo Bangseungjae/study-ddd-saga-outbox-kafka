@@ -5,15 +5,15 @@ import org.springframework.stereotype.Component
 
 @Component
 data class KafkaConfigData (
-    @Value("$CONFIG_DATA.bootstrapServers")
+    @Value("\${$CONFIG_DATA.bootstrap-servers}")
     val bootstrapServers: String,
-    @Value("$CONFIG_DATA.schemaRegistryUrlKey")
+    @Value("\${$CONFIG_DATA.schema-registry-url-key}")
     val schemaRegistryUrlKey: String,
-    @Value("$CONFIG_DATA.schemaRegistryUrl")
+    @Value("\${$CONFIG_DATA.schema-registry-url}")
     val schemaRegistryUrl: String,
-    @Value("$CONFIG_DATA.numOfPartitions")
+    @Value("\${$CONFIG_DATA.num-of-partitions}")
     val numOfPartitions: Int,
-    @Value("$CONFIG_DATA.replicationFactor")
+    @Value("\${$CONFIG_DATA.replication-factor}")
     val replicationFactor: Short,
 )
 
