@@ -6,7 +6,7 @@ import java.time.ZonedDateTime
 class PaymentCancelledEvent(
     payment: Payment,
     createdAt: ZonedDateTime,
-    failureMessages: MutableList<String>
+    failureMessages: MutableList<String> = mutableListOf(),
 ) :  PaymentEvent(
     payment = payment,
     createdAt = createdAt,

@@ -1,5 +1,6 @@
 package com.food.ordering.system.payment.service.domain.entity
 
+import com.food.ordering.system.domain.KOREA_DATE_TIME
 import com.food.ordering.system.domain.entity.AggregateRoot
 import com.food.ordering.system.domain.valueobject.CustomerId
 import com.food.ordering.system.domain.valueobject.Money
@@ -32,4 +33,3 @@ class Payment(
     }
 }
 
-const val KOREA_DATE_TIME = "Asia/Seoul"

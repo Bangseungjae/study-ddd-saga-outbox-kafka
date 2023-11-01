@@ -36,7 +36,7 @@ public class CancelOrderKafkaMessagePublisher implements OrderCancelledPaymentRe
     @Override
     public void publish(@NotNull OrderCancelledEvent domainEvent) {
         String orderId = domainEvent.getOrder().getId().getValue().toString();
-        logger.info("Received OrderCreatedEvent for order id: $orderId");
+        logger.info("Received OrderCreatedEvent for order id: {}", orderId);
         try {
 
             PaymentRequestAvroModel paymentRequestAvroModel =
@@ -53,7 +53,7 @@ public class CancelOrderKafkaMessagePublisher implements OrderCancelledPaymentRe
                             "PaymentRequestAvroModel"
                     )
             );
-            logger.info("PaymentRequestAvroModel sent to Kafka for order id: {}", paymentRequestAvroModel.orderId);
+            logger.info("PaymentRequestAvroModel sent to Kafka for order id: {}", paymentRequestAvroModel.getOrderId());
         } catch (Exception e) {
             logger.error("Error while sending PaymentRequestModel message" +
                     " to kafka with order id: {} error: {}", orderId, e.getMessage());
