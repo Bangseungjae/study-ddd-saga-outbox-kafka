@@ -7,5 +7,5 @@ interface CreditHistoryRepository {
 
     fun save(creditHistory: CreditHistory)
 
-    fun findByCustomerId(customerId: CustomerId): List<CreditHistory>
+    fun findByCustomerId(customerId: CustomerId): MutableList<CreditHistory>
 }

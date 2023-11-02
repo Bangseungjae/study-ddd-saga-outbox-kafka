@@ -4,7 +4,7 @@ import com.food.ordering.system.domain.event.DomainEvent
 import com.food.ordering.system.payment.service.domain.entity.Payment
 import java.time.ZonedDateTime
 
-abstract class PaymentEvent(
+sealed class PaymentEvent(
     val payment: Payment,
     val createdAt: ZonedDateTime,
     val failureMessages: MutableList<String>,
