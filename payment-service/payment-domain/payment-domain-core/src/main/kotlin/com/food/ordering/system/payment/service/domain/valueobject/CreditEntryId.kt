@@ -4,5 +4,5 @@ import com.food.ordering.system.domain.valueobject.BaseId
 import java.util.UUID
 
 data class CreditEntryId(
-    val id: UUID,
-) : BaseId<UUID>(id)
+    override val value: UUID,
+) : BaseId<UUID>(value)

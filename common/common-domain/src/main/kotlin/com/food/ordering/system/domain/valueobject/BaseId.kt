@@ -1,7 +1,7 @@
 package com.food.ordering.system.domain.valueobject
 
 abstract class BaseId<T>(
-    val value: T,
+    open val value: T,
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

@@ -5,7 +5,7 @@ import com.food.ordering.system.payment.service.domain.entity.CreditEntry
 
 interface CreditEntryRepository {
 
-    fun save(creditEntry: CreditEntry)
+    fun save(creditEntry: CreditEntry): CreditEntry
 
     fun findByCustomerId(customerId: CustomerId): CreditEntry?
 }
