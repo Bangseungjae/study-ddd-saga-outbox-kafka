@@ -22,6 +22,8 @@ dependencies {
     // https://mvnrepository.com/artifact/org.postgresql/postgresql
     implementation("org.postgresql:postgresql:42.6.0")
 
+    api(project(":common:common-dataaccess"))
+
 }
 
 tasks.named<BootJar>("bootJar") {

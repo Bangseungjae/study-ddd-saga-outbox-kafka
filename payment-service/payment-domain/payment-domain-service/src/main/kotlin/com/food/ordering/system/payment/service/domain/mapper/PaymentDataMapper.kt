@@ -13,7 +13,7 @@ import java.util.*
 class PaymentDataMapper {
     fun paymentRequestModelToPayment(paymentRequest: PaymentRequest): Payment = Payment(
         orderId =  OrderId(UUID.fromString(paymentRequest.orderId)),
-        customerId = paymentRequest.customerId,
+        customerId = CustomerId(UUID.fromString(paymentRequest.customerId)),
         price = Money(paymentRequest.price),
         paymentStatus = PaymentStatus.COMPLETED,
     )

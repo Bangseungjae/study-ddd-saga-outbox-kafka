@@ -5,9 +5,7 @@ import com.food.ordering.system.kafka.config.producer.service.KafkaProducer
 import com.food.ordering.system.kafka.order.avro.model.PaymentResponseAvroModel
 import com.food.ordering.system.payment.service.domain.config.PaymentServiceConfigData
 import com.food.ordering.system.payment.service.domain.event.PaymentCancelledEvent
-import com.food.ordering.system.payment.service.domain.event.PaymentCompletedEvent
 import com.food.ordering.system.payment.service.domain.ports.output.output.message.publisher.PaymentCancelledMessagePublisher
-import com.food.ordering.system.payment.service.domain.ports.output.output.message.publisher.PaymentCompletedMessagePublisher
 import com.food.ordering.system.payment.service.messaging.mapper.PaymentMessagingDataMapper
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component

@@ -13,7 +13,7 @@ class PaymentDataAccessMapper {
 
     fun paymentToPaymentEntity(payment: Payment): PaymentEntity = PaymentEntity(
         id = payment.id.value,
-        customerId = payment.customerId.id,
+        customerId = payment.customerId.value,
         orderId = payment.orderId.id,
         price = payment.price.amount,
         status = payment.paymentStatus,

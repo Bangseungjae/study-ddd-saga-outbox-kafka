@@ -6,8 +6,14 @@ import org.springframework.boot.runApplication
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 
 
-@EnableJpaRepositories(basePackages = [ "com.food.ordering.system.order.service.dataaccess", "com.food.ordering.system.order.service.dataaccess" ])
-@EntityScan(basePackages = ["com.food.ordering.system.order.service.dataaccess"])
+@EnableJpaRepositories(basePackages = [
+    "com.food.ordering.system.order.service.dataaccess",
+    "com.food.ordering.system.dataaccess",
+])
+@EntityScan(basePackages = [
+    "com.food.ordering.system.order.service.dataaccess",
+    "com.food.ordering.system.dataaccess",
+])
 @SpringBootApplication(scanBasePackages = ["com.food.ordering.system"])
 class OrderServiceApplication {
 }

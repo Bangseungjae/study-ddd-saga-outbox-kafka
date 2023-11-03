@@ -61,13 +61,13 @@ class PaymentDomainServiceImpl : PaymentDomainService {
         val totalDebitHistory = getTotalHistoryAmount(creditHistories, TransactionType.DEBIT)
 
         if (totalDebitHistory.isGreaterThan(totalCreditHistory)) {
-            logger.error("Customer with id: ${creditEntry.customerId.id} doesn't have enough credit according to credit history")
-            failureMessages.add("Customer with id=${creditEntry.customerId.id} doesn't have enough credit according to credit history!")
+            logger.error("Customer with id: ${creditEntry.customerId.value} doesn't have enough credit according to credit history")
+            failureMessages.add("Customer with id=${creditEntry.customerId.value} doesn't have enough credit according to credit history!")
         }
 
         if (creditEntry.totalCreditAmount == totalCreditHistory.subtract(totalDebitHistory)) {
-            logger.error("Credit history total is not equal to current credit for customer id: ${creditEntry.customerId.id}")
-            failureMessages.add("Credit history total is not equal to current credit for customer id: ${creditEntry.customerId.id}!")
+            logger.error("Credit history total is not equal to current credit for customer id: ${creditEntry.customerId.value}")
+            failureMessages.add("Credit history total is not equal to current credit for customer id: ${creditEntry.customerId.value}!")
         }
     }
 
@@ -106,8 +106,8 @@ class PaymentDomainServiceImpl : PaymentDomainService {
         failureMessages: MutableList<String>
     ) {
         if (payment.price.isGreaterThan(creditEntry.totalCreditAmount)) {
-            logger.error("Customer with id: ${payment.customerId.id} doesn't have enough value for payment!")
-            failureMessages.add("Customer with id=${payment.customerId.id} doesn't have enough credit for payment!")
+            logger.error("Customer with id: ${payment.customerId.value} doesn't have enough value for payment!")
+            failureMessages.add("Customer with id=${payment.customerId.value} doesn't have enough credit for payment!")
         }
     }
 

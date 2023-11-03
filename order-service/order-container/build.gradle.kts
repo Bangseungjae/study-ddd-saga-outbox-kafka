@@ -23,9 +23,3 @@ tasks.named<BootJar>("bootJar") {
 tasks.named<Jar>("jar") {
     enabled = true
 }
-configurations {
-    all {
-        exclude("commons-logging:commons-logging")
-        exclude("org.slf4j:slf4j-reload4j")
-    }
-}

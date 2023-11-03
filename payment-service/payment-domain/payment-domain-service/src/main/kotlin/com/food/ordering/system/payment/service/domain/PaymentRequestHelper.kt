@@ -30,7 +30,7 @@ class PaymentRequestHelper(
     fun persistPayment(paymentRequest: PaymentRequest): PaymentEvent {
         logger.info("Received payment complete event for order id: ${paymentRequest.orderId}")
         val payment = paymentDataMapper.paymentRequestModelToPayment(paymentRequest)
-        val creditEntry: CreditEntry =  getCreditEntry(paymentRequest.customerId)
+        val creditEntry: CreditEntry =  getCreditEntry(CustomerId(UUID.fromString(paymentRequest.customerId)))
         val creditHistories: MutableList<CreditHistory> = getCreditHistory(payment.customerId)
         val failureMessages = mutableListOf<String>()
         val paymentEvent: PaymentEvent = paymentDomainService.validateAndInitiatePayment(
@@ -90,16 +90,16 @@ class PaymentRequestHelper(
     private fun getCreditHistory(customerId: CustomerId): MutableList<CreditHistory> {
         val creditHistories = creditHistoryRepository.findByCustomerId(customerId)
         if (creditHistories.isEmpty()) {
-            logger.error("Could not find credit history for customer: ${customerId.id}")
-            throw PaymentApplicationServiceException("Could not find credit history for customer: ${customerId.id}")
+            logger.error("Could not find credit history for customer: ${customerId.value}")
+            throw PaymentApplicationServiceException("Could not find credit history for customer: ${customerId.value}")
         }
         return creditHistories
     }
 
     private fun getCreditEntry(customerId: CustomerId): CreditEntry {
         return creditEntryRepository.findByCustomerId(customerId)?:run {
-            logger.error("Could not find credit entry for customer: ${customerId.id}")
-            throw PaymentApplicationServiceException("Could not find credit entry for customer: ${customerId.id}")
+            logger.error("Could not find credit entry for customer: ${customerId.value}")
+            throw PaymentApplicationServiceException("Could not find credit entry for customer: ${customerId.value}")
         }
     }
 }

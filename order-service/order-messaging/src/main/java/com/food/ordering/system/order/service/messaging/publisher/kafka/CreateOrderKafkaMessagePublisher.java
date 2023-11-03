@@ -1,6 +1,5 @@
 package com.food.ordering.system.order.service.messaging.publisher.kafka;
 
-import com.food.ordering.system.kafka.config.producer.KafkaMessageHelper;
 import com.food.ordering.system.kafka.config.producer.service.KafkaProducer;
 import com.food.ordering.system.kafka.order.avro.model.PaymentRequestAvroModel;
 import com.food.ordering.system.order.service.domain.config.OrderServiceConfigData;

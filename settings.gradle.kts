@@ -16,6 +16,7 @@ include("order-service:order-messaging")
 include("common")
 include("common:common-domain")
 include("common:common-application")
+include(":common:common-dataaccess")
 
 // infra
 include(":infrastructure")
@@ -37,3 +38,13 @@ include("payment-service:payment-messaging")
 include("payment-service:payment-domain")
 include("payment-service:payment-domain:payment-domain-core")
 include("payment-service:payment-domain:payment-domain-service")
+
+// restaurant
+include("restaurant-service")
+include("restaurant-service:restaurant-container")
+include("restaurant-service:restaurant-dataaccess")
+include("restaurant-service:restaurant-domain")
+include("restaurant-service:restaurant-domain:restaurant-application-service")
+include("restaurant-service:restaurant-domain:restaurant-domain-core")
+include("restaurant-service:restaurant-messaging")
+

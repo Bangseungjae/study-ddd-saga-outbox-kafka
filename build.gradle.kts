@@ -38,6 +38,14 @@ allprojects {
             url = uri("https://packages.confluent.io/maven")
         }
     }
+
+    configurations {
+        all {
+            exclude("commons-logging:commons-logging")
+            exclude("org.slf4j:slf4j-reload4j")
+            exclude(group = "ch.qos.logback", module = "logback-classic")
+        }
+    }
 }
 
 subprojects {

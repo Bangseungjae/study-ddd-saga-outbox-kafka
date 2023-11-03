@@ -42,7 +42,5 @@ class PaymentCompletedKafkaMessagePublisher(
             logger.error("Error while sending PaymentResponseAvroModel message to kafka with order id: $orderId, " +
                     "message: ${e.message}")
         }
-
-
     }
 }
