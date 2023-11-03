@@ -16,6 +16,8 @@ include("order-service:order-messaging")
 include("common")
 include("common:common-domain")
 include("common:common-application")
+
+// infra
 include(":infrastructure")
 include(":infrastructure:kafka")
 include(":infrastructure:kafka:kafka-config-data")

@@ -1,5 +1,6 @@
 package com.food.ordering.system.order.service.messaging.publisher.kafka;
 
+import com.food.ordering.system.kafka.config.producer.KafkaMessageHelper;
 import com.food.ordering.system.kafka.config.producer.service.KafkaProducer;
 import com.food.ordering.system.kafka.order.avro.model.PaymentRequestAvroModel;
 import com.food.ordering.system.order.service.domain.config.OrderServiceConfigData;
@@ -17,17 +18,17 @@ public class CreateOrderKafkaMessagePublisher implements OrderCreatedPaymentRequ
     private final OrderMessagingDataMapper orderMessagingDataMapper;
     private final OrderServiceConfigData orderServiceConfigData;
     private final KafkaProducer<String, PaymentRequestAvroModel> kafkaProducer;
-    private final OrderKafkaMessageHelper orderKafkaMessageHelper;
+    private final KafkaMessageHelper kafkaMessageHelper;
 
     public CreateOrderKafkaMessagePublisher(
             OrderMessagingDataMapper orderMessagingDataMapper,
             OrderServiceConfigData orderServiceConfigData,
             KafkaProducer<String, PaymentRequestAvroModel> kafkaProducer,
-            OrderKafkaMessageHelper orderKafkaMessageHelper) {
+            KafkaMessageHelper kafkaMessageHelper) {
         this.orderMessagingDataMapper = orderMessagingDataMapper;
         this.orderServiceConfigData = orderServiceConfigData;
         this.kafkaProducer = kafkaProducer;
-        this.orderKafkaMessageHelper = orderKafkaMessageHelper;
+        this.kafkaMessageHelper = kafkaMessageHelper;
     }
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -45,7 +46,7 @@ public class CreateOrderKafkaMessagePublisher implements OrderCreatedPaymentRequ
                     orderServiceConfigData.getPaymentRequestTopicName(),
                     orderId,
                     paymentRequestAvroModel,
-                    orderKafkaMessageHelper.getKafkaCallback(
+                    kafkaMessageHelper.getKafkaCallback(
                             orderServiceConfigData.getPaymentResponseTopicName(),
                             paymentRequestAvroModel,
                             orderId,

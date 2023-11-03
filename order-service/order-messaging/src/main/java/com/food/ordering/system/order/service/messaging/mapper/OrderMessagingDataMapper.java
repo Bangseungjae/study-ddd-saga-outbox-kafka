@@ -34,7 +34,7 @@ public class OrderMessagingDataMapper {
         return new PaymentRequestAvroModel(
                 UUID.randomUUID().toString(),
                 "",
-                order.getCustomerId().getId().toString(),
+                order.getCustomerId().getValue().toString(),
                 order.getId().getValue().toString(),
                 order.getPrice().getAmount(),
                 orderCancelledEvent.getCreatedAt().toInstant(),

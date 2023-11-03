@@ -108,11 +108,11 @@ project(":infrastructure:kafka:kafka-consumer") {
 
 project(":infrastructure:kafka:kafka-model") {
     dependencies {
-        implementation("org.springframework.kafka:spring-kafka")
-        implementation("io.confluent:kafka-avro-serializer:$serializer_version")
-        implementation("org.apache.avro:avro:${avro_version}")
-        implementation("org.apache.avro:avro-tools:${avro_version}")
-        implementation("org.apache.avro:avro-maven-plugin:$avro_version")
+        api("org.springframework.kafka:spring-kafka")
+        api("io.confluent:kafka-avro-serializer:$serializer_version")
+        api("org.apache.avro:avro:${avro_version}")
+        api("org.apache.avro:avro-tools:${avro_version}")
+        api("org.apache.avro:avro-maven-plugin:$avro_version")
     }
 }
 
