@@ -7,7 +7,7 @@ import java.time.Instant
 
 data class RestaurantApprovalRequest(
     val id: String,
-    val sataId: String,
+    val sagaId: String,
     val restaurantId: String,
     val orderId: String,
     val restaurantOrderStatus: RestaurantOrderStatus,

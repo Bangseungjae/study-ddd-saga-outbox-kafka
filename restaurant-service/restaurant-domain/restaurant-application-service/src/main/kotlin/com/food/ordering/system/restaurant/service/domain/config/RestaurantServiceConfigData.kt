@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 
 @ConfigurationProperties(prefix = "restaurant-service")
 data class RestaurantServiceConfigData(
-    val restaurantApprovalRestaurantTopicName: String,
+    val restaurantApprovalRequestTopicName: String,
     val restaurantApprovalResponseTopicName: String,
 ) {
 }
