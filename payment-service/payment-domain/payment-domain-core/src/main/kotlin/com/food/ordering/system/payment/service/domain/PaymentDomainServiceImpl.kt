@@ -65,7 +65,7 @@ class PaymentDomainServiceImpl : PaymentDomainService {
             failureMessages.add("Customer with id=${creditEntry.customerId.value} doesn't have enough credit according to credit history!")
         }
 
-        if (creditEntry.totalCreditAmount == totalCreditHistory.subtract(totalDebitHistory)) {
+        if (creditEntry.totalCreditAmount != totalCreditHistory.subtract(totalDebitHistory)) {
             logger.error("Credit history total is not equal to current credit for customer id: ${creditEntry.customerId.value}")
             failureMessages.add("Credit history total is not equal to current credit for customer id: ${creditEntry.customerId.value}!")
         }
@@ -105,6 +105,8 @@ class PaymentDomainServiceImpl : PaymentDomainService {
         creditEntry: CreditEntry,
         failureMessages: MutableList<String>
     ) {
+        logger.info("totalCreditAmount = ${creditEntry.totalCreditAmount}")
+        logger.info("payment price = ${payment.price.amount}")
         if (payment.price.isGreaterThan(creditEntry.totalCreditAmount)) {
             logger.error("Customer with id: ${payment.customerId.value} doesn't have enough value for payment!")
             failureMessages.add("Customer with id=${payment.customerId.value} doesn't have enough credit for payment!")
@@ -129,7 +131,7 @@ class PaymentDomainServiceImpl : PaymentDomainService {
             failureMessages.isEmpty() -> {
                 logger.info("Payment is cancelled for order id: ${payment.orderId.id}")
                 payment.updateStatus(PaymentStatus.CANCELLED)
-                return PaymentCancelledEvent(
+                PaymentCancelledEvent(
                     payment = payment,
                     createdAt = ZonedDateTime.now(ZoneId.of(KOREA_DATE_TIME)),
                 )
@@ -138,7 +140,7 @@ class PaymentDomainServiceImpl : PaymentDomainService {
             else -> {
                 logger.info("Payment cancellation is failed for order id: ${payment.orderId.id}")
                 payment.updateStatus(PaymentStatus.FAILED)
-                return PaymentFailedEvent(
+                PaymentFailedEvent(
                     payment = payment,
                     createdAt = ZonedDateTime.now(ZoneId.of(KOREA_DATE_TIME)),
                     failureMessages = failureMessages,

@@ -8,6 +8,7 @@ dependencies {
     testImplementation("org.mockito.kotlin:mockito-kotlin:3.2.0")
 
     api(project(":order-service:order-domain:order-domain-core"))
+    api(project(":infrastructure:saga"))
 }
 
 tasks.named<BootJar>("bootJar") {

@@ -21,6 +21,7 @@ include(":common:common-dataaccess")
 // infra
 include(":infrastructure")
 include(":infrastructure:kafka")
+include(":infrastructure:saga")
 include(":infrastructure:kafka:kafka-config-data")
 include(":infrastructure:kafka:kafka-consumer")
 include(":infrastructure:kafka:kafka-model")
@@ -48,3 +49,9 @@ include("restaurant-service:restaurant-domain:restaurant-application-service")
 include("restaurant-service:restaurant-domain:restaurant-domain-core")
 include("restaurant-service:restaurant-messaging")
 
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+    }
+}

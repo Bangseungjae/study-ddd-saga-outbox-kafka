@@ -16,11 +16,11 @@ class PaymentMessagingDataMapper {
 
     fun paymentCompletedEventToPaymentResponseAvroModel(paymentCompletedEvent: PaymentCompletedEvent): PaymentResponseAvroModel =
         PaymentResponseAvroModel.newBuilder()
-            .setId(UUID.randomUUID().toString())
-            .setSagaId("")
-            .setPaymentId(paymentCompletedEvent.payment.id.value.toString())
-            .setCustomerId(paymentCompletedEvent.payment.customerId.value.toString())
-            .setOrderId(paymentCompletedEvent.payment.orderId.value.toString())
+            .setId(UUID.randomUUID())
+            .setSagaId(UUID.randomUUID())
+            .setPaymentId(paymentCompletedEvent.payment.id.value)
+            .setCustomerId(paymentCompletedEvent.payment.customerId.value)
+            .setOrderId(paymentCompletedEvent.payment.orderId.value)
             .setPrice(paymentCompletedEvent.payment.price.amount)
             .setCreatedAt(paymentCompletedEvent.createdAt.toInstant())
             .setPaymentStatus(PaymentStatus.valueOf(paymentCompletedEvent.payment.paymentStatus.name))
@@ -29,11 +29,11 @@ class PaymentMessagingDataMapper {
 
     fun paymentCancelledEventToPaymentResponseAvroModel(paymentCancelledEvent: PaymentCancelledEvent): PaymentResponseAvroModel =
         PaymentResponseAvroModel.newBuilder()
-            .setId(UUID.randomUUID().toString())
-            .setSagaId("")
-            .setPaymentId(paymentCancelledEvent.payment.id.value.toString())
-            .setCustomerId(paymentCancelledEvent.payment.customerId.value.toString())
-            .setOrderId(paymentCancelledEvent.payment.orderId.value.toString())
+            .setId(UUID.randomUUID())
+            .setSagaId(UUID.randomUUID())
+            .setPaymentId(paymentCancelledEvent.payment.id.value)
+            .setCustomerId(paymentCancelledEvent.payment.customerId.value)
+            .setOrderId(paymentCancelledEvent.payment.orderId.value)
             .setPrice(paymentCancelledEvent.payment.price.amount)
             .setCreatedAt(paymentCancelledEvent.createdAt.toInstant())
             .setPaymentStatus(PaymentStatus.valueOf(paymentCancelledEvent.payment.paymentStatus.name))
@@ -42,11 +42,11 @@ class PaymentMessagingDataMapper {
 
     fun paymentFailedEventToPaymentResponseAvroModel(paymentFailedEvent: PaymentFailedEvent): PaymentResponseAvroModel =
         PaymentResponseAvroModel.newBuilder()
-            .setId(UUID.randomUUID().toString())
-            .setSagaId("")
-            .setPaymentId(paymentFailedEvent.payment.id.value.toString())
-            .setCustomerId(paymentFailedEvent.payment.customerId.value.toString())
-            .setOrderId(paymentFailedEvent.payment.orderId.value.toString())
+            .setId(UUID.randomUUID())
+            .setSagaId(UUID.randomUUID())
+            .setPaymentId(paymentFailedEvent.payment.id.value)
+            .setCustomerId(paymentFailedEvent.payment.customerId.value)
+            .setOrderId(paymentFailedEvent.payment.orderId.value)
             .setPrice(paymentFailedEvent.payment.price.amount)
             .setCreatedAt(paymentFailedEvent.createdAt.toInstant())
             .setPaymentStatus(PaymentStatus.valueOf(paymentFailedEvent.payment.paymentStatus.name))
@@ -55,12 +55,12 @@ class PaymentMessagingDataMapper {
 
     fun paymentRequestAvroModelToPaymentRequest(paymentRequestAvroModel: PaymentRequestAvroModel): PaymentRequest =
         PaymentRequest(
-            id = paymentRequestAvroModel.getId(),
-            sagaId = paymentRequestAvroModel.getSagaId(),
-            orderId = paymentRequestAvroModel.getOrderId(),
-            customerId = paymentRequestAvroModel.getCustomerId(),
-            price = paymentRequestAvroModel.getPrice(),
-            createdAt = paymentRequestAvroModel.getCreatedAt(),
-            paymentOrderStatus = PaymentOrderStatus.valueOf(paymentRequestAvroModel.getPaymentOrderStatus().name)
+            id = paymentRequestAvroModel.id.toString(),
+            sagaId = paymentRequestAvroModel.sagaId.toString(),
+            orderId = paymentRequestAvroModel.orderId.toString(),
+            customerId = paymentRequestAvroModel.customerId.toString(),
+            price = paymentRequestAvroModel.price,
+            createdAt = paymentRequestAvroModel.createdAt,
+            paymentOrderStatus = PaymentOrderStatus.valueOf(paymentRequestAvroModel.paymentOrderStatus.name)
         )
 }

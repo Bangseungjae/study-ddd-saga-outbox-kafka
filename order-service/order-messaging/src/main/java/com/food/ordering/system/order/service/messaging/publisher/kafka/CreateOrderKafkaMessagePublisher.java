@@ -1,5 +1,6 @@
 package com.food.ordering.system.order.service.messaging.publisher.kafka;
 
+import com.food.ordering.system.kafka.config.producer.KafkaMessageHelper;
 import com.food.ordering.system.kafka.config.producer.service.KafkaProducer;
 import com.food.ordering.system.kafka.order.avro.model.PaymentRequestAvroModel;
 import com.food.ordering.system.order.service.domain.config.OrderServiceConfigData;
@@ -52,10 +53,11 @@ public class CreateOrderKafkaMessagePublisher implements OrderCreatedPaymentRequ
                             "PaymentRequestAvroModel"
                     )
             );
-            logger.info("PaymentRequestAvroModel sent to Kafka for order id: {}", paymentRequestAvroModel.orderId);
+            logger.info("PaymentRequestAvroModel sent to Kafka for order id: {}", paymentRequestAvroModel.getOrderId());
         } catch (Exception e) {
             logger.error("Error while sending PaymentRequestModel message" +
                     " to kafka with order id: {} error: {}", orderId, e.getMessage());
+            logger.error("error -> {}", e);
         }
     }
 

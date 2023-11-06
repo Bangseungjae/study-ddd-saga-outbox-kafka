@@ -1,6 +1,4 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.jetbrains.kotlin.ir.backend.js.compile
-import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
     id("org.springframework.boot") version "3.1.5" apply false
@@ -42,8 +40,14 @@ allprojects {
     configurations {
         all {
             exclude("commons-logging:commons-logging")
+            exclude("org.springframework.boot:spring-boot-starter-logging")
             exclude("org.slf4j:slf4j-reload4j")
-            exclude(group = "ch.qos.logback", module = "logback-classic")
+            exclude(group = "org.slf4j", module = "slf4j-log4j12")
+            exclude("org.slf4j:slf4j-api")
+            exclude(group = "org.slf4j", module = "slf4j-simple")
+            exclude("log4j:log4j")
+            exclude(group = "org.apache.logging.log4j", module = "log4j-to-slf4j")
+//            exclude(group = "ch.qos.logback", module = "logback-classic")
         }
     }
 }
@@ -63,12 +67,6 @@ subprojects {
 
         testImplementation("org.springframework.boot:spring-boot-starter-test")
 
-    }
-    configurations {
-        all {
-            exclude("commons-logging:commons-logging")
-            exclude("ch.qos.logback:logback-classic")
-        }
     }
 }
 
@@ -91,36 +89,35 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
-val serializer_version = "7.0.1"
-val avro_version = "1.11.1"
+val serializerVersion = "7.5.1"
+val avroVersion = "1.11.3"
 
 project(":infrastructure:kafka:kafka-config-data") {
     dependencies {
         implementation("org.springframework.kafka:spring-kafka")
-        implementation("io.confluent:kafka-avro-serializer:$serializer_version")
-        implementation("org.apache.avro:avro:$avro_version")
+        api("io.confluent:kafka-avro-serializer:$serializerVersion")
+        api("org.apache.avro:avro:$avroVersion")
     }
 }
 
 project(":infrastructure:kafka:kafka-producer") {
     dependencies {
-        implementation("io.confluent:kafka-avro-serializer:$serializer_version")
+        api("io.confluent:kafka-avro-serializer:$serializerVersion")
+        api("org.apache.avro:avro:$avroVersion")
     }
 }
 
 project(":infrastructure:kafka:kafka-consumer") {
     dependencies {
-        implementation("io.confluent:kafka-avro-serializer:$serializer_version")
+        api("io.confluent:kafka-avro-serializer:$serializerVersion")
+        api("org.apache.avro:avro:$avroVersion")
     }
 }
 
 project(":infrastructure:kafka:kafka-model") {
     dependencies {
         api("org.springframework.kafka:spring-kafka")
-        api("io.confluent:kafka-avro-serializer:$serializer_version")
-        api("org.apache.avro:avro:${avro_version}")
-        api("org.apache.avro:avro-tools:${avro_version}")
-        api("org.apache.avro:avro-maven-plugin:$avro_version")
+        api("org.apache.avro:avro:${avroVersion}")
     }
 }
 

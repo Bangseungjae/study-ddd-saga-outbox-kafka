@@ -19,9 +19,6 @@ dependencies {
     implementation("org.springframework.kafka:spring-kafka")
     implementation(project(mapOf("path" to ":infrastructure:kafka:kafka-model")))
     testImplementation("org.springframework.kafka:spring-kafka-test")
-
-    implementation("org.apache.avro:avro:${avroVersion}")
-    implementation("org.apache.avro:avro-tools:${avroVersion}")
 }
 
 tasks.named<BootJar>("bootJar") {

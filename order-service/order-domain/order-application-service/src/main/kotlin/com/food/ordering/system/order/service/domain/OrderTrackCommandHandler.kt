@@ -9,6 +9,7 @@ import com.food.ordering.system.order.service.domain.ports.output.repository.Ord
 import com.food.ordering.system.order.service.domain.valueobject.TrackingId
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 
 @Component
 class OrderTrackCommandHandler(
@@ -17,6 +18,7 @@ class OrderTrackCommandHandler(
 ) {
     private val logger = LoggerFactory.getLogger(this.javaClass)
 
+    @Transactional(readOnly = true)
     fun trackOrder(trackOrderQuery: TrackOrderQuery): TrackOrderResponse {
         val orderResult: Order = orderRepository.findByTrackingId(TrackingId(trackOrderQuery.orderTrackingId))
             ?: run {

@@ -22,15 +22,15 @@ class PaymentCompletedKafkaMessagePublisher(
     override fun publish(domainEvent: PaymentCompletedEvent) {
         val orderId = domainEvent.payment.orderId.value.toString()
         logger.info("Received PaymentCompleted Event for order id: $orderId")
-        val paymentResponseAvroModel =
-            paymentMessagingDataMapper.paymentCompletedEventToPaymentResponseAvroModel(domainEvent)
 
         try {
+        val paymentResponseAvroModel =
+            paymentMessagingDataMapper.paymentCompletedEventToPaymentResponseAvroModel(domainEvent)
             kafkaProducer.send(
-                topicName = paymentServiceConfigData.paymentRequestTopicName,
+                topicName = paymentServiceConfigData.paymentResponseTopicName,
                 key = orderId,
                 callback = kafkaMessageHelper.getKafkaCallback(
-                    paymentServiceConfigData.paymentRequestTopicName,
+                    paymentServiceConfigData.paymentResponseTopicName,
                     paymentResponseAvroModel,
                     orderId,
                     "PaymentResponseAvroModel",

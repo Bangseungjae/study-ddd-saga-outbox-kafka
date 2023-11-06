@@ -66,7 +66,9 @@ fun OrderEntity.orderEntityToOrder(): Order = let {
         price = Money(amount = it.price),
         items = it.items.orderItemEntitiesToOrderItems(),
         trackingId = TrackingId(it.trackingId),
-        failureMessages = it.failureMessages.split(FAILURE_MESSAGE_DELIMITER).toMutableList()
+        failureMessages = if(it.failureMessages.isEmpty()) mutableListOf() else
+            it.failureMessages.split(FAILURE_MESSAGE_DELIMITER).toMutableList(),
+        orderStatus = orderStatus
     )
 }
 private fun OrderAddressEntity.addressEntityToDeliveryAddress(): StreetAddress = let {

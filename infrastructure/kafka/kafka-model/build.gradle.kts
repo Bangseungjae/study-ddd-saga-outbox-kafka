@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.js.backend.ast.JsEmpty.source
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
-    id("com.github.davidmc24.gradle.plugin.avro") version "1.0.0"
+    id("com.github.davidmc24.gradle.plugin.avro") version "1.9.0"
 }
 
 val generateAvro = tasks.register<GenerateAvroJavaTask>("generateAvro") {

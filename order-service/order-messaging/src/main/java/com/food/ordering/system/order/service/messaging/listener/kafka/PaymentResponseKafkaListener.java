@@ -44,13 +44,14 @@ public class PaymentResponseKafkaListener implements KafkaConsumer<PaymentRespon
     ) {
         logger.info("{} number of payment responses received with keys: {}, partitions: {}, and offsets: {}",
                 messages.size(),
-                keys.toString(),
-                partitions.toString(),
-                offsets.toString());
+                keys,
+                partitions,
+                offsets);
 
         messages.forEach(paymentResponseAvroModel -> {
             if (PaymentStatus.COMPLETED == paymentResponseAvroModel.getPaymentStatus()) {
-                logger.info("Processing successful payment for order id: {}", paymentResponseAvroModel.orderId);
+                logger.info("Processing successful payment for order id: {}",
+                        paymentResponseAvroModel.getOrderId());
                 paymentResponseMessageListener.paymentCompleted(
                         orderMessagingDataMapper.paymentResponseAvroModelToPaymentResponse(paymentResponseAvroModel)
                 );

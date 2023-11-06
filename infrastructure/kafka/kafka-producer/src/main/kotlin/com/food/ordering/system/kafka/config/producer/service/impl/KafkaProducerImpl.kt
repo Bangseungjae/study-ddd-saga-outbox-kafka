@@ -1,7 +1,7 @@
 package com.food.ordering.system.kafka.config.producer.service.impl
 
+import com.food.ordering.system.kafka.config.producer.exception.KafkaProducerException
 import com.food.ordering.system.kafka.config.producer.service.KafkaProducer
-import com.food.ordering.system.kafka.order.avro.model.PaymentResponseAvroModel
 import jakarta.annotation.PreDestroy
 import org.apache.avro.specific.SpecificRecordBase
 import org.apache.kafka.common.KafkaException
@@ -36,8 +36,8 @@ class KafkaProducerImpl <K: Serializable, V: SpecificRecordBase>(
             val kafkaResultFuture: CompletableFuture<SendResult<K, V>> = kafkaTemplate.send(topicName, key, message)
 //            kafkaResultFuture.completeAsync { callback. }
         } catch (e: KafkaException) {
-            logger.info("Error on kafka producer with key: $key message: $message and exception: ${e.message}")
-            throw KafkaException("Error on kafka producer with key: $key message: $message")
+            logger.error("Error on kafka producer with key: $key message: $message and exception: ${e.message}")
+            throw KafkaProducerException("Error on kafka producer with key: $key message: $message")
         }
     }
 }

@@ -20,7 +20,7 @@ class RestaurantApprovalRequestKafkaListener(
 
     @KafkaListener(
         id = "\${kafka-consumer-config.restaurant-approval-consumer-group-id}",
-        topics = ["\${restaurant-service.restaurant-approval-request-topic-name}]"],
+        topics = ["\${restaurant-service.restaurant-approval-request-topic-name}"],
     )
     override fun receive(
         @Payload messages: List<RestaurantApprovalRequestAvroModel>,

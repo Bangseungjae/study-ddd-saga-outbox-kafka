@@ -13,10 +13,10 @@ import java.util.UUID
 
 fun OrderApprovalEvent.toRestaurantApprovalResponseAvroModel(): RestaurantApprovalResponseAvroModel = run {
     RestaurantApprovalResponseAvroModel.newBuilder()
-        .setId(UUID.randomUUID().toString())
-        .setSagaId("")
-        .setOrderId(orderApproval.orderId.value.toString())
-        .setRestaurantId(orderApproval.restaurantId.value.toString())
+        .setId(UUID.randomUUID())
+        .setSagaId(UUID.fromString(""))
+        .setOrderId(orderApproval.orderId.value)
+        .setRestaurantId(orderApproval.restaurantId.value)
         .setCreatedAt(createdAt.toInstant())
         .setOrderApprovalStatus(OrderApprovalStatus.valueOf(orderApproval.orderApprovalStatus.name))
         .setFailureMessages(failureMessages)
@@ -25,10 +25,10 @@ fun OrderApprovalEvent.toRestaurantApprovalResponseAvroModel(): RestaurantApprov
 
 fun OrderRejectedEvent.toRestaurantApprovalResponseAvroModel(): RestaurantApprovalResponseAvroModel = run {
     RestaurantApprovalResponseAvroModel.newBuilder()
-        .setId(UUID.randomUUID().toString())
-        .setSagaId("")
-        .setOrderId(orderApproval.orderId.value.toString())
-        .setRestaurantId(orderApproval.restaurantId.value.toString())
+        .setId(UUID.randomUUID())
+        .setSagaId(UUID.fromString(""))
+        .setOrderId(orderApproval.orderId.value)
+        .setRestaurantId(orderApproval.restaurantId.value)
         .setCreatedAt(createdAt.toInstant())
         .setOrderApprovalStatus(OrderApprovalStatus.valueOf(orderApproval.orderApprovalStatus.name))
         .setFailureMessages(failureMessages)
@@ -37,18 +37,18 @@ fun OrderRejectedEvent.toRestaurantApprovalResponseAvroModel(): RestaurantApprov
 
 fun RestaurantApprovalRequestAvroModel.toRestaurantApproval(): RestaurantApprovalRequest = run {
     RestaurantApprovalRequest(
-        id = getId(),
-        sagaId = getSagaId(),
-        restaurantId = getRestaurantId(),
-        orderId = getOrderId(),
+        id = id.toString(),
+        sagaId = sagaId.toString(),
+        restaurantId = restaurantId.toString(),
+        orderId = orderId.toString(),
         restaurantOrderStatus = com.food.ordering.system.domain.valueobject.RestaurantOrderStatus.valueOf(getRestaurantOrderStatus().name),
-        projects = getProducts().map { avroModel ->
+        projects = products.map { avroModel ->
             Product(
-                id = ProductId(UUID.fromString(avroModel.getId())),
-                quantity = avroModel.getQuantity()
+                id = ProductId(UUID.fromString(avroModel.id)),
+                quantity = avroModel.quantity
             )
         },
-        price = getPrice(),
-        createdAt = getCreatedAt()
+        price = price,
+        createdAt = createdAt
     )
 }

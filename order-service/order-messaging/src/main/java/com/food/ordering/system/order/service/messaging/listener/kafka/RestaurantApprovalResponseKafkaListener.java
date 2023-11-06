@@ -44,9 +44,10 @@ public class RestaurantApprovalResponseKafkaListener implements KafkaConsumer<Re
     ) {
         logger.info("{} number of restaurant approval responses received with keys {}, partitions: {} and offsets: {}",
                 messages.size(),
-                keys.toString(),
-                partitions.toString(),
-                offsets.toString());
+                keys,
+                partitions,
+                offsets
+        );
 
         messages.forEach(restaurantApprovalResponseAvroModel -> {
             if (OrderApprovalStatus.APPROVED == restaurantApprovalResponseAvroModel.getOrderApprovalStatus()) {
