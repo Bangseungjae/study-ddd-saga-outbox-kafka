@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service
 @Service
 class RestaurantApprovalMessageListenerImpl(
     private val orderApprovalSaga: OrderApprovalSaga,
-    private val orderCancelledEventDomainEventPublisher: DomainEventPublisher<OrderCancelledEvent>
 ) : RestaurantApprovalResponseMessageListener {
 
     private val logger = LoggerFactory.getLogger(this.javaClass)
@@ -21,10 +20,8 @@ class RestaurantApprovalMessageListenerImpl(
     }
 
     override fun orderRejected(restaurantApprovalResponse: RestaurantApprovalResponse) {
-        val domainEvent = orderApprovalSaga.rollback(restaurantApprovalResponse)
-        logger.info("Publishing order cancelled event for order id: ${restaurantApprovalResponse.orderId} " +
+        orderApprovalSaga.rollback(restaurantApprovalResponse)
+        logger.info("OrderApproval Saga rollback operation is completed for order id: ${restaurantApprovalResponse.orderId} " +
                 "with failure messages: ${restaurantApprovalResponse.failureMessages.joinToString { "," }}")
-
-        orderCancelledEventDomainEventPublisher.publish(domainEvent)
     }
 }

@@ -8,10 +8,11 @@ import com.food.ordering.system.order.service.domain.entity.Restaurant
 import com.food.ordering.system.order.service.domain.event.OrderCreatedEvent
 import com.food.ordering.system.order.service.domain.exception.OrderDomainException
 import com.food.ordering.system.order.service.domain.mapper.OrderDataMapper
-import com.food.ordering.system.order.service.domain.ports.output.message.publisher.payment.OrderCreatedPaymentRequestMessagePublisher
+import com.food.ordering.system.order.service.domain.outbox.scheduler.payment.PaymentOutboxHelper
 import com.food.ordering.system.order.service.domain.ports.output.repository.CustomerRepository
 import com.food.ordering.system.order.service.domain.ports.output.repository.OrderRepository
 import com.food.ordering.system.order.service.domain.ports.output.repository.RestaurantRepository
+import com.food.ordering.system.outbox.OutboxStatus
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
@@ -19,58 +20,30 @@ import java.util.*
 
 @Component
 class OrderCreateCommandHandler(
-    private val orderDomainService: OrderDomainService,
-    private val orderRepository: OrderRepository,
-    private val customerRepository: CustomerRepository,
-    private val restaurantRepository: RestaurantRepository,
     private val orderDataMapper: OrderDataMapper,
-    private val applicationDomainEventPublisher: OrderCreatedPaymentRequestMessagePublisher,
+    private val paymentOutboxHelper: PaymentOutboxHelper,
+    private val orderCreateHelper: OrderCreateHelper,
+    private val orderSagaHelper: OrderSagaHelper,
 ) {
 
     private val logger = LoggerFactory.getLogger(this.javaClass)
 
-    @Transactional
     fun createOrder(createOrderCommand: CreateOrderCommand): CreateOrderResponse {
-        checkCustomer(createOrderCommand.customerId)
-        val restaurant = checkRestaurant(createOrderCommand)
-        val order: Order = orderDataMapper.createOrderCommandToOrder(createOrderCommand)
-        val orderCreatedEvent: OrderCreatedEvent = orderDomainService.validateAndInitiateOrder(
-            order = order,
-            restaurant = restaurant
+        val orderCreatedEvent = orderCreateHelper.persistOrder(createOrderCommand)
+        logger.info("Order is created with id: ${orderCreatedEvent.order.id.value}")
+        val createOrderResponse = orderDataMapper.orderToCreateOrderResponse(
+            order = orderCreatedEvent.order,
+            message = "Order created successfully"
         )
-        saveOrder(order)
-        applicationDomainEventPublisher.publish(orderCreatedEvent)
-        return orderDataMapper.orderToCreateOrderResponse(
-            order = order,
-            message = "Order created successfully",
+        paymentOutboxHelper.savePaymentOutboxMessage(
+            sagaId = UUID.randomUUID(),
+            paymentEventPayload = orderDataMapper.orderCreatedEventToOrderPaymentEventPayload(orderCreatedEvent),
+            sagaStatus = orderSagaHelper.orderStatusToSagaStatus(orderCreatedEvent.order.orderStatus),
+            orderStatus = orderCreatedEvent.order.orderStatus,
+            outboxStatus = OutboxStatus.STARTED,
         )
-    }
 
-    private fun checkRestaurant(createOrderCommand: CreateOrderCommand): Restaurant {
-        val restaurant: Restaurant = orderDataMapper.createOrderCommandToRestaurant(createOrderCommand)
-        val findRestaurantInformation: Restaurant? = restaurantRepository.findRestaurantInformation(restaurant)
-        if (findRestaurantInformation == null) {
-            throwDomainExceptionAndLogging("Cloud not find restaurant with restaurant id: ${createOrderCommand.restaurantId}")
-        }
-        return findRestaurantInformation!!
-    }
-
-    private fun throwDomainExceptionAndLogging(message: String) {
-        logger.info(message)
-        throw OrderDomainException(message)
-    }
-
-    private fun checkCustomer(customerId: UUID) {
-        val customer: Customer? = customerRepository.findCustomer(customerId)
-        customer ?: run {
-                logger.info("Could not find customer with customer id: $customerId")
-                throw OrderDomainException("Could not find customer with customer id: $customerId")
-            }
-    }
-
-    private fun saveOrder(order: Order): Order {
-        val orderResult: Order = orderRepository.save(order)
-        logger.info("Order is saved with id: ${orderResult.id.value}")
-        return orderResult
+        logger.info("Returning CreateOrderResponse with order id: ${orderCreatedEvent.order.id}")
+        return createOrderResponse
     }
 }

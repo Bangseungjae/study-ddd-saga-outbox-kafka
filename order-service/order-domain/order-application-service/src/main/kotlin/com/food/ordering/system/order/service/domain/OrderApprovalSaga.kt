@@ -39,6 +39,4 @@ class OrderApprovalSaga(
         logger.info("Order with id: ${order.id.value} is cancelling")
         return domainEvent
     }
-
-
 }

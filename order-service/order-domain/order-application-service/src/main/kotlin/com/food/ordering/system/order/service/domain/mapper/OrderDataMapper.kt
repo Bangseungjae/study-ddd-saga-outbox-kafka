@@ -9,6 +9,11 @@ import com.food.ordering.system.order.service.domain.entity.Order
 import com.food.ordering.system.order.service.domain.entity.OrderItem
 import com.food.ordering.system.order.service.domain.entity.Product
 import com.food.ordering.system.order.service.domain.entity.Restaurant
+import com.food.ordering.system.order.service.domain.event.OrderCreatedEvent
+import com.food.ordering.system.order.service.domain.event.OrderPaidEvent
+import com.food.ordering.system.order.service.domain.outbox.model.approval.OrderApprovalEventPayload
+import com.food.ordering.system.order.service.domain.outbox.model.approval.OrderApprovalEventProduct
+import com.food.ordering.system.order.service.domain.outbox.model.payment.OrderPaymentEventPayload
 import com.food.ordering.system.order.service.domain.valueobject.OrderItemId
 import com.food.ordering.system.order.service.domain.valueobject.StreetAddress
 import org.springframework.stereotype.Component
@@ -75,6 +80,32 @@ class OrderDataMapper {
             orderTrackingId = order.trackingId.value,
             orderStatus = order.orderStatus,
             failureMessages = order.failureMessages
+        )
+    }
+
+    fun orderCreatedEventToOrderPaymentEventPayload(orderCreatedEvent: OrderCreatedEvent): OrderPaymentEventPayload {
+        return OrderPaymentEventPayload(
+            customerId = orderCreatedEvent.order.customerId.value.toString(),
+            orderId = orderCreatedEvent.order.id.value.toString(),
+            price = orderCreatedEvent.order.price.amount,
+            createdAt = orderCreatedEvent.createdAt,
+            paymentOrderStatus = PaymentOrderStatus.PENDING.name
+        )
+    }
+
+    fun orderPaidEventToOrderApprovalEventPayload(orderPaidEvent: OrderPaidEvent): OrderApprovalEventPayload {
+        return OrderApprovalEventPayload(
+            orderId = orderPaidEvent.order.id.value.toString(),
+            restaurantId = orderPaidEvent.order.restaurantId.value.toString(),
+            price = orderPaidEvent.order.price.amount,
+            products = orderPaidEvent.order.items.map { orderItem ->
+                OrderApprovalEventProduct(
+                    id = orderItem.product.id.value.toString(),
+                    quantity = orderItem.quantity,
+                )
+            },
+            createdAt = orderPaidEvent.createdAt,
+            restaurantOrderStatus = RestaurantOrderStatus.PAID.name
         )
     }
 }

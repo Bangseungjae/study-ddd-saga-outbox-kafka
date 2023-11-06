@@ -1,9 +1,13 @@
 package com.food.ordering.system.order.service.domain
 
 import com.food.ordering.system.domain.valueobject.OrderId
+import com.food.ordering.system.domain.valueobject.OrderStatus
+import com.food.ordering.system.domain.valueobject.OrderStatus.*
 import com.food.ordering.system.order.service.domain.entity.Order
 import com.food.ordering.system.order.service.domain.exception.OrderNotFoundException
 import com.food.ordering.system.order.service.domain.ports.output.repository.OrderRepository
+import com.food.ordering.system.saga.SagaStatus
+import com.food.ordering.system.saga.SagaStatus.*
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.util.*
@@ -23,5 +27,15 @@ class OrderSagaHelper(
 
     fun saveOrder(order: Order) {
         orderRepository.save(order)
+    }
+
+    fun orderStatusToSagaStatus(orderStatus: OrderStatus): SagaStatus {
+        return when (orderStatus) {
+            PAID -> PROCESSING
+            APPROVED -> SUCCEEDED
+            CANCELLING -> COMPENSATING
+            CANCELLED -> COMPENSATED
+            else -> STARTED
+        }
     }
 }
