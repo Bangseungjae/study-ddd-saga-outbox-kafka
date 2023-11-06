@@ -11,7 +11,7 @@ import java.util.*
 class Restaurant private constructor(
     value: RestaurantId,
 
-    var active: Boolean = true,
+    var active: Boolean,
     val orderDetail: OrderDetail,
     var orderApproval: OrderApproval
 ) : AggregateRoot<RestaurantId>(value) {
@@ -33,14 +33,14 @@ class Restaurant private constructor(
     }
 
     fun constructOrderApproval(orderApprovalStatus: OrderApprovalStatus) {
-        this.orderApproval
+        this.orderApproval.orderApprovalStatus = orderApprovalStatus
     }
 
     companion object {
         operator fun invoke(
             id: RestaurantId,
             orderDetail: OrderDetail,
-            active: Boolean = true,
+            active: Boolean,
             orderApprovalStatus: OrderApprovalStatus = OrderApprovalStatus.APPROVED,
         ): Restaurant {
             return Restaurant(

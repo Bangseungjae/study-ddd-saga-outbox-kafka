@@ -34,7 +34,7 @@ public class OrderMessagingDataMapper {
 
         return PaymentRequestAvroModel.newBuilder()
                 .setId(UUID.randomUUID())
-                .setSagaId(UUID.fromString(""))
+                .setSagaId(UUID.randomUUID())
                 .setCustomerId(order.getCustomerId().getValue())
                 .setOrderId(order.getId().getValue())
                 .setPrice(order.getPrice().getAmount())

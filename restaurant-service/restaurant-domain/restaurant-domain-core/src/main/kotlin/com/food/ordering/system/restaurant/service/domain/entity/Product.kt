@@ -9,7 +9,7 @@ class Product(
     var name: String = "",
     var price: Money = Money.ZERO,
     val quantity: Int,
-    var available: Boolean = true,
+    var available: Boolean,
 ) : BaseEntity<ProductId>(id) {
 
     fun updateWithConfirmedNamePriceAndAvailability(

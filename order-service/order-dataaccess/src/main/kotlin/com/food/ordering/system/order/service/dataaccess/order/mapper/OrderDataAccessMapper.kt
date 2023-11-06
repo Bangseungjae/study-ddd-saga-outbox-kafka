@@ -11,6 +11,7 @@ import com.food.ordering.system.order.service.domain.mapper.OrderDataMapper
 import com.food.ordering.system.order.service.domain.valueobject.OrderItemId
 import com.food.ordering.system.order.service.domain.valueobject.StreetAddress
 import com.food.ordering.system.order.service.domain.valueobject.TrackingId
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import kotlin.collections.List
 
@@ -20,6 +21,7 @@ const val FAILURE_MESSAGE_DELIMITER = ","
 class OrderDataAccessMapper(
     private val orderDataMapper: OrderDataMapper,
 ) {
+
     fun orderToOrderEntity(order: Order): OrderEntity {
         val orderEntity = OrderEntity(
             id = order.id.value,
@@ -28,7 +30,7 @@ class OrderDataAccessMapper(
             trackingId = order.trackingId.value,
             address = deliveryAddressToAddressEntity(order.deliveryAddress),
             price = order.price.amount,
-            failureMessages = order.failureMessages.joinToString { FAILURE_MESSAGE_DELIMITER },
+            failureMessages = order.failureMessages.joinToString(separator = ","),
             items = orderItemsToOrderItemEntities(order.items),
             orderStatus = order.orderStatus,
         )

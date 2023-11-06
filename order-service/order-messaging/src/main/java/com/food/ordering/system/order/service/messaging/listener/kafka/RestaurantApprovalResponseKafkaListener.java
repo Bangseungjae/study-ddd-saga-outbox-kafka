@@ -50,6 +50,7 @@ public class RestaurantApprovalResponseKafkaListener implements KafkaConsumer<Re
         );
 
         messages.forEach(restaurantApprovalResponseAvroModel -> {
+            logger.info("failure messages: {}", restaurantApprovalResponseAvroModel.getFailureMessages());
             if (OrderApprovalStatus.APPROVED == restaurantApprovalResponseAvroModel.getOrderApprovalStatus()) {
                 logger.info("Processing approved order for order id: {}", restaurantApprovalResponseAvroModel.getOrderId());
 
@@ -57,6 +58,7 @@ public class RestaurantApprovalResponseKafkaListener implements KafkaConsumer<Re
                         orderMessagingDataMapper.approvalResponseAvroModelToApprovalResponse(restaurantApprovalResponseAvroModel)
                 );
             } else if (OrderApprovalStatus.REJECTED == restaurantApprovalResponseAvroModel.getOrderApprovalStatus()) {
+                logger.info("reject failure message: {}", restaurantApprovalResponseAvroModel.getFailureMessages());
                 logger.info("Processing rejected order for order id: {} with failure messages: {}",
                         restaurantApprovalResponseAvroModel.getOrderId(),
                         String.join(",", restaurantApprovalResponseAvroModel.getFailureMessages())

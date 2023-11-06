@@ -10,7 +10,7 @@ class OrderApproval(
     id: OrderApprovalId,
     val restaurantId: RestaurantId,
     val orderId: OrderId,
-    val orderApprovalStatus: OrderApprovalStatus,
+    var orderApprovalStatus: OrderApprovalStatus,
 ) : BaseEntity<OrderApprovalId>(id) {
 
 }

@@ -20,6 +20,5 @@ class RestaurantApprovalRequestMessageListenerImpl(
     override fun approveOrder(restaurantApprovalRequest: RestaurantApprovalRequest) {
         val orderApprovalEvent = restaurantApprovalRequestHelper.persistOrderApproval(restaurantApprovalRequest)
         orderApprovalEvent.fire()
-        orderApprovalEvent.orderApproval.orderApprovalStatus
     }
 }

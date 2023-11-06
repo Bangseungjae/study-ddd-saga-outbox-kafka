@@ -16,12 +16,14 @@ class RestaurantDataMapper {
     fun restaurantApprovalRequestToRestaurant(restaurantApprovalRequest: RestaurantApprovalRequest): Restaurant {
         return Restaurant(
             id = RestaurantId(UUID.fromString(restaurantApprovalRequest.restaurantId)),
+            active = true,
             orderDetail = OrderDetail(
                 id = OrderId(UUID.fromString(restaurantApprovalRequest.orderId)),
                 products = restaurantApprovalRequest.projects.map { product ->
                     Product(
                         id = product.id,
-                        quantity = product.quantity
+                        quantity = product.quantity,
+                        available = product.available,
                     )
                 },
                 orderStatus = OrderStatus.valueOf(restaurantApprovalRequest.restaurantOrderStatus.name),

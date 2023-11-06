@@ -29,10 +29,10 @@ class PaymentCancelledKafkaMessagePublisher(
 
         try {
             kafkaProducer.send(
-                topicName = paymentServiceConfigData.paymentRequestTopicName,
+                topicName = paymentServiceConfigData.paymentResponseTopicName,
                 key = orderId,
                 callback = kafkaMessageHelper.getKafkaCallback(
-                    paymentServiceConfigData.paymentRequestTopicName,
+                    paymentServiceConfigData.paymentResponseTopicName,
                     paymentResponseAvroModel,
                     orderId,
                     "PaymentResponseAvroModel",

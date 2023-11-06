@@ -14,7 +14,7 @@ import java.util.UUID
 fun OrderApprovalEvent.toRestaurantApprovalResponseAvroModel(): RestaurantApprovalResponseAvroModel = run {
     RestaurantApprovalResponseAvroModel.newBuilder()
         .setId(UUID.randomUUID())
-        .setSagaId(UUID.fromString(""))
+        .setSagaId(UUID.randomUUID())
         .setOrderId(orderApproval.orderId.value)
         .setRestaurantId(orderApproval.restaurantId.value)
         .setCreatedAt(createdAt.toInstant())
@@ -26,7 +26,7 @@ fun OrderApprovalEvent.toRestaurantApprovalResponseAvroModel(): RestaurantApprov
 fun OrderRejectedEvent.toRestaurantApprovalResponseAvroModel(): RestaurantApprovalResponseAvroModel = run {
     RestaurantApprovalResponseAvroModel.newBuilder()
         .setId(UUID.randomUUID())
-        .setSagaId(UUID.fromString(""))
+        .setSagaId(UUID.randomUUID())
         .setOrderId(orderApproval.orderId.value)
         .setRestaurantId(orderApproval.restaurantId.value)
         .setCreatedAt(createdAt.toInstant())
@@ -41,11 +41,14 @@ fun RestaurantApprovalRequestAvroModel.toRestaurantApproval(): RestaurantApprova
         sagaId = sagaId.toString(),
         restaurantId = restaurantId.toString(),
         orderId = orderId.toString(),
-        restaurantOrderStatus = com.food.ordering.system.domain.valueobject.RestaurantOrderStatus.valueOf(getRestaurantOrderStatus().name),
+        restaurantOrderStatus = com.food.ordering.system.domain.valueobject.RestaurantOrderStatus.valueOf(
+            restaurantOrderStatus.name
+        ),
         projects = products.map { avroModel ->
             Product(
                 id = ProductId(UUID.fromString(avroModel.id)),
-                quantity = avroModel.quantity
+                quantity = avroModel.quantity,
+                available = true,
             )
         },
         price = price,
