@@ -12,11 +12,12 @@ import org.springframework.stereotype.Component
 import org.springframework.util.concurrent.ListenableFutureCallback
 import java.io.Serializable
 import java.util.concurrent.CompletableFuture
+import java.util.function.BiConsumer
 
 @Component
-class KafkaProducerImpl <K: Serializable, V: SpecificRecordBase>(
-    private val kafkaTemplate: KafkaTemplate<K, V>
-) : KafkaProducer<K, V>{
+class KafkaProducerImpl<K : Serializable, V : SpecificRecordBase>(
+    private val kafkaTemplate: KafkaTemplate<K, V>,
+) : KafkaProducer<K, V> {
 
     private val logger = LoggerFactory.getLogger(this::class.java)
 
@@ -29,12 +30,16 @@ class KafkaProducerImpl <K: Serializable, V: SpecificRecordBase>(
         }
     }
 
-    override fun send(topicName: String, key: K, message: V, callback: ListenableFutureCallback<SendResult<K, V>>) {
+    override fun send(
+        topicName: String, key: K,
+        message: V,
+        callback: BiConsumer<SendResult<K, V>, Throwable?>,
+    ) {
         logger.info("Sending message=$message to topic=$topicName")
 
         try {
             val kafkaResultFuture: CompletableFuture<SendResult<K, V>> = kafkaTemplate.send(topicName, key, message)
-//            kafkaResultFuture.completeAsync { callback. }
+            kafkaResultFuture.whenComplete(callback)
         } catch (e: KafkaException) {
             logger.error("Error on kafka producer with key: $key message: $message and exception: ${e.message}")
             throw KafkaProducerException("Error on kafka producer with key: $key message: $message")

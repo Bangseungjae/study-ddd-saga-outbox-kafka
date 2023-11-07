@@ -1,41 +1,56 @@
 package com.food.ordering.system.kafka.config.producer
 
+import com.fasterxml.jackson.core.JsonProcessingException
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.food.ordering.system.order.service.domain.exception.OrderDomainException
+import com.food.ordering.system.outbox.OutboxStatus
 import org.slf4j.LoggerFactory
 import org.springframework.kafka.support.SendResult
-import org.springframework.lang.Nullable
 import org.springframework.stereotype.Component
-import org.springframework.util.concurrent.ListenableFutureCallback
+import java.util.function.BiConsumer
 
 @Component
-class KafkaMessageHelper {
+class KafkaMessageHelper(
+    private val objectMapper: ObjectMapper,
+) {
 
     private val logger = LoggerFactory.getLogger(this::class.java)
 
-    fun <T> getKafkaCallback(
-        paymentResponseTopicName: String,
+    fun <T> getOrderEventPayload(
+        payload: String,
+        outputType: Class<T>,
+    ): T {
+        try {
+            return objectMapper.readValue(payload, outputType)
+        } catch (e: JsonProcessingException) {
+            logger.error("Could not read ${outputType.name}", e)
+            throw OrderDomainException("Could not read ${outputType.name}")
+        }
+    }
+
+    fun <T, U> getKafkaCallback(
+        responseTopicName: String,
         avroModel: T,
+        outboxMessage: U,
+        outboxCallback: BiConsumer<U, OutboxStatus>,
         orderId: String,
         avroModelName: String,
-    ): ListenableFutureCallback<SendResult<String, T>> {
-        return object : ListenableFutureCallback<SendResult<String, T>> {
-            override fun onSuccess(@Nullable result: SendResult<String, T>?) {
-                val metadata = result?.recordMetadata
-                if (metadata != null) {
-                    logger.info(
-                        "Received successful response from Kafka for order id: {}" +
-                                "Topic: {} Partition: {} offset: {} Timestamp: {}",
-                        orderId,
-                        metadata.topic(),
-                        metadata.offset(),
-                        metadata.timestamp()
-                    )
-                }
+    ): BiConsumer<SendResult<String, T>, Throwable?> {
+        return BiConsumer { result, ex ->
+            if (ex == null) {
+                val metadata = result.recordMetadata
+                logger.info("Received successful response from kafka for order id: $orderId Topic: ${metadata.topic()} " +
+                        "Partition: ${metadata.partition()} Offset: ${metadata.offset()} Timestamp: ${metadata.timestamp()}")
+
+                outboxCallback.accept(outboxMessage, OutboxStatus.COMPLETED)
+            } else {
+                logger.error("Error while sending $avroModelName with message: ${avroModel.toString()} and outbox type: " +
+                        "${outboxMessage!!::class.java.name} to topic: $responseTopicName"
+                )
+                outboxCallback.accept(outboxMessage, OutboxStatus.FAILED)
             }
 
-            override fun onFailure(ex: Throwable) {
-                logger.error("Error while sending $avroModelName to topic {}", paymentResponseTopicName, ex)
-            }
         }
-
     }
+
 }

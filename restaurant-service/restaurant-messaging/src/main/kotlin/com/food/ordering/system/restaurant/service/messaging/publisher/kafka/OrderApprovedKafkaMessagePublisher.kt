@@ -31,7 +31,7 @@ class OrderApprovedKafkaMessagePublisher(
                 key = orderId,
                 message = restaurantApprovalResponseAvroModel,
                 callback = kafkaMessageHelper.getKafkaCallback(
-                    paymentResponseTopicName = restaurantServiceConfigData.restaurantApprovalResponseTopicName,
+                    responseTopicName = restaurantServiceConfigData.restaurantApprovalResponseTopicName,
                     avroModel = restaurantApprovalResponseAvroModel,
                     orderId = orderId,
                     avroModelName = "RestaurantApprovalResponseAvroModel"

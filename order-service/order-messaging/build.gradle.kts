@@ -15,6 +15,8 @@ dependencies {
     api(project(":common:common-domain"))
     api(project(":order-service:order-domain:order-domain-core"))
 
+    implementation("org.springframework.boot:spring-boot-starter-json")
+
     // Kafka
     implementation("org.springframework.kafka:spring-kafka")
     implementation(project(mapOf("path" to ":infrastructure:kafka:kafka-model")))
