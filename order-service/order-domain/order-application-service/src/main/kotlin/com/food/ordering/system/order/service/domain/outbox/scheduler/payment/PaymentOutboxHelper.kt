@@ -70,7 +70,6 @@ class PaymentOutboxHelper(
                 orderStatus = orderStatus,
                 sagaStatus = sagaStatus,
                 outboxStatus = outboxStatus,
-                version = 1
             )
         )
     }

@@ -18,6 +18,6 @@ data class OrderPaymentOutboxMessage(
     var sagaStatus: SagaStatus,
     var orderStatus: OrderStatus,
     var outboxStatus: OutboxStatus,
-    var version: Int,
+    var version: Int = 0,
 ) {
 }

@@ -9,6 +9,7 @@ import com.food.ordering.system.order.service.domain.entity.Order
 import com.food.ordering.system.order.service.domain.entity.OrderItem
 import com.food.ordering.system.order.service.domain.entity.Product
 import com.food.ordering.system.order.service.domain.entity.Restaurant
+import com.food.ordering.system.order.service.domain.event.OrderCancelledEvent
 import com.food.ordering.system.order.service.domain.event.OrderCreatedEvent
 import com.food.ordering.system.order.service.domain.event.OrderPaidEvent
 import com.food.ordering.system.order.service.domain.outbox.model.approval.OrderApprovalEventPayload
@@ -40,7 +41,7 @@ class OrderDataMapper {
     }
 
     private fun orderItemsToOrderItemEntities(
-        items: List<com.food.ordering.system.order.service.domain.dto.create.OrderItem>
+        items: List<com.food.ordering.system.order.service.domain.dto.create.OrderItem>,
     ): List<OrderItem> {
         return items.map { orderItem ->
             OrderItem(
@@ -108,4 +109,13 @@ class OrderDataMapper {
             restaurantOrderStatus = RestaurantOrderStatus.PAID.name
         )
     }
+
+    fun orderCancelledEventToOrderPaymentEventPayload(orderCancelledEvent: OrderCancelledEvent): OrderPaymentEventPayload =
+        OrderPaymentEventPayload(
+            orderId = orderCancelledEvent.order.id.value.toString(),
+            customerId = orderCancelledEvent.order.customerId.value.toString(),
+            price = orderCancelledEvent.order.price.amount,
+            createdAt = orderCancelledEvent.createdAt,
+            paymentOrderStatus = PaymentOrderStatus.CANCELLED.name,
+        )
 }

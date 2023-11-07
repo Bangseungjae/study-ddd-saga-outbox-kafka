@@ -1,8 +1,8 @@
 package com.food.ordering.system.order.service.domain
 
-import com.food.ordering.system.order.service.domain.ports.output.repository.CustomerRepository
-import com.food.ordering.system.order.service.domain.ports.output.repository.OrderRepository
-import com.food.ordering.system.order.service.domain.ports.output.repository.RestaurantRepository
+import com.food.ordering.system.order.service.domain.ports.output.message.publisher.payment.PaymentRequestMessagePublisher
+import com.food.ordering.system.order.service.domain.ports.output.message.publisher.restaurantapproval.RestaurantApprovalRequestMessagePublisher
+import com.food.ordering.system.order.service.domain.ports.output.repository.*
 import org.mockito.Mockito
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.context.annotation.Bean
@@ -11,19 +11,15 @@ import org.springframework.context.annotation.Bean
 class OrderTestConfiguration {
 
     @Bean
-    fun orderCreatedPaymentRequestMessagePublisher(): OrderCreatedPaymentRequestMessagePublisher {
-        return Mockito.mock(OrderCreatedPaymentRequestMessagePublisher::class.java)
+    fun paymentRequestMessagePublisher(): PaymentRequestMessagePublisher {
+        return Mockito.mock(PaymentRequestMessagePublisher::class.java)
     }
 
     @Bean
-    fun orderCancelledPaymentRequestMessagePublisher(): OrderCancelledPaymentRequestMessagePublisher {
-        return Mockito.mock(OrderCancelledPaymentRequestMessagePublisher::class.java)
+    fun restaurantApprovalRequestMessagePublisher(): RestaurantApprovalRequestMessagePublisher {
+        return Mockito.mock(RestaurantApprovalRequestMessagePublisher::class.java)
     }
 
-    @Bean
-    fun orderPaidRequestMessagePublisher(): OrderPaidRestaurantRequestMessagePublisher {
-        return Mockito.mock(OrderPaidRestaurantRequestMessagePublisher::class.java)
-    }
 
     @Bean
     fun orderRepository(): OrderRepository {
@@ -38,6 +34,16 @@ class OrderTestConfiguration {
     @Bean
     fun restaurantRepository(): RestaurantRepository {
         return Mockito.mock(RestaurantRepository::class.java)
+    }
+
+    @Bean
+    fun paymentOutboxRepository(): PaymentOutboxRepository {
+        return Mockito.mock(PaymentOutboxRepository::class.java)
+    }
+
+    @Bean
+    fun approvalOutboxRepository(): ApprovalOutboxRepository {
+        return Mockito.mock(ApprovalOutboxRepository::class.java)
     }
 
     @Bean

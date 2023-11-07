@@ -1,5 +1,8 @@
 package com.food.ordering.system.order.service.domain
 
+import com.fasterxml.jackson.core.JsonProcessingException
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.food.ordering.system.domain.KOREA_DATE_TIME
 import com.food.ordering.system.domain.exception.DomainException
 import com.food.ordering.system.domain.valueobject.*
 import com.food.ordering.system.order.service.domain.dto.create.CreateOrderCommand
@@ -9,11 +12,15 @@ import com.food.ordering.system.order.service.domain.entity.Customer
 import com.food.ordering.system.order.service.domain.entity.Order
 import com.food.ordering.system.order.service.domain.entity.Product
 import com.food.ordering.system.order.service.domain.entity.Restaurant
+import com.food.ordering.system.order.service.domain.exception.OrderDomainException
 import com.food.ordering.system.order.service.domain.mapper.OrderDataMapper
+import com.food.ordering.system.order.service.domain.outbox.model.payment.OrderPaymentEventPayload
+import com.food.ordering.system.order.service.domain.outbox.model.payment.OrderPaymentOutboxMessage
 import com.food.ordering.system.order.service.domain.ports.input.service.OrderApplicationService
-import com.food.ordering.system.order.service.domain.ports.output.repository.CustomerRepository
-import com.food.ordering.system.order.service.domain.ports.output.repository.OrderRepository
-import com.food.ordering.system.order.service.domain.ports.output.repository.RestaurantRepository
+import com.food.ordering.system.order.service.domain.ports.output.repository.*
+import com.food.ordering.system.outbox.OutboxStatus
+import com.food.ordering.system.saga.SagaStatus
+import com.food.ordering.system.saga.order.ORDER_SAGA_NAME
 import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeAll
@@ -24,6 +31,8 @@ import org.mockito.kotlin.anyOrNull
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import java.math.BigDecimal
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.util.UUID
 
 
@@ -46,13 +55,20 @@ class OrderApplicationServiceTest {
     @Autowired
     private lateinit var restaurantRepository: RestaurantRepository
 
+    @Autowired
+    private lateinit var paymentOutboxRepository: PaymentOutboxRepository
+
+    @Autowired
+    private lateinit var objectMapper: ObjectMapper
+
     private lateinit var createOrderCommand: CreateOrderCommand
     private lateinit var createOrderCommandWrongPrice: CreateOrderCommand
     private lateinit var createOrderCommandWrongProductPrice: CreateOrderCommand
     private val CUSTOMER_ID = UUID.fromString("d215b5f8-0249-4dc5-89a3-51fd148cfb41")
-    private val RESTAURANT_ID = UUID.fromString("d215b5f8-0249-4dc5-89a3-51fd148cfb41")
-    private val PRODUCT_ID = UUID.fromString("d215b5f8-0249-4dc5-89a3-51fd148cfb41")
-    private val ORDER_ID = UUID.fromString("d215b5f8-0249-4dc5-89a3-51fd148cfb41")
+    private val RESTAURANT_ID = UUID.fromString("d215b5f8-0249-4dc5-89a3-51fd148cfb45")
+    private val PRODUCT_ID = UUID.fromString("d215b5f8-0249-4dc5-89a3-51fd148cfb48")
+    private val ORDER_ID = UUID.fromString("15a497c1-0f4b-4eff-b9f4-c402c8c07afb")
+    private val SAGA_ID = UUID.fromString("15a497c1-0f4b-4eff-b9f4-c402c8c07afa")
     private val PRICE: BigDecimal = BigDecimal("200.00")
 
 
@@ -154,6 +170,39 @@ class OrderApplicationServiceTest {
 
         `when`(orderRepository.save(anyOrNull<Order>()))
             .thenReturn(order)
+
+        `when`(paymentOutboxRepository.save(anyOrNull<OrderPaymentOutboxMessage>()))
+            .thenReturn(getOrderPaymentOutboxMessage())
+    }
+
+    private fun getOrderPaymentOutboxMessage(): OrderPaymentOutboxMessage {
+        val orderPaymentEventPayload = OrderPaymentEventPayload(
+            orderId = ORDER_ID.toString(),
+            customerId = CUSTOMER_ID.toString(),
+            price = PRICE,
+            createdAt = ZonedDateTime.now(ZoneId.of(KOREA_DATE_TIME)),
+            paymentOrderStatus = PaymentOrderStatus.PENDING.name,
+        )
+
+        return OrderPaymentOutboxMessage(
+            id = UUID.randomUUID(),
+            sagaId = SAGA_ID,
+            createdAt = ZonedDateTime.now(ZoneId.of(KOREA_DATE_TIME)),
+            type = ORDER_SAGA_NAME,
+            payload = createPayload(orderPaymentEventPayload),
+            orderStatus = OrderStatus.PENDING,
+            sagaStatus = SagaStatus.STARTED,
+            outboxStatus = OutboxStatus.STARTED,
+            version = 0
+        )
+    }
+
+    private fun createPayload(orderPaymentEventPayload: OrderPaymentEventPayload): String {
+        try {
+            return objectMapper.writeValueAsString(orderPaymentEventPayload)
+        } catch (e: JsonProcessingException) {
+            throw OrderDomainException("Cannot create OrderPaymentEventPayload object!")
+        }
     }
 
 
