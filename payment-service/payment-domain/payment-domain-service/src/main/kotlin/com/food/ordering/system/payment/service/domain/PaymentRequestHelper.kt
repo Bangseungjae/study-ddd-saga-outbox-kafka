@@ -7,6 +7,7 @@ import com.food.ordering.system.payment.service.domain.entity.CreditHistory
 import com.food.ordering.system.payment.service.domain.entity.Payment
 import com.food.ordering.system.payment.service.domain.event.PaymentEvent
 import com.food.ordering.system.payment.service.domain.exception.PaymentApplicationServiceException
+import com.food.ordering.system.payment.service.domain.exception.PaymentNotFoundException
 import com.food.ordering.system.payment.service.domain.mapper.PaymentDataMapper
 import com.food.ordering.system.payment.service.domain.ports.output.output.repostiroy.CreditEntryRepository
 import com.food.ordering.system.payment.service.domain.ports.output.output.repostiroy.CreditHistoryRepository
@@ -27,7 +28,7 @@ class PaymentRequestHelper(
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     @Transactional
-    fun persistPayment(paymentRequest: PaymentRequest): PaymentEvent {
+    fun persistPayment(paymentRequest: PaymentRequest) {
         logger.info("Received payment complete event for order id: ${paymentRequest.orderId}")
         val payment = paymentDataMapper.paymentRequestModelToPayment(paymentRequest)
         val creditEntry: CreditEntry =  getCreditEntry(CustomerId(UUID.fromString(paymentRequest.customerId)))
@@ -45,7 +46,6 @@ class PaymentRequestHelper(
             creditEntry = creditEntry,
             creditHistories = creditHistories,
         )
-        return paymentEvent
     }
 
     private fun persistDbObjects(
@@ -62,11 +62,11 @@ class PaymentRequestHelper(
     }
 
     @Transactional
-    fun persistCancelPayment(paymentRequest: PaymentRequest): PaymentEvent {
+    fun persistCancelPayment(paymentRequest: PaymentRequest) {
         logger.info("Received payment rollback event for order id: ${paymentRequest.orderId}")
         val payment = paymentRepository.findByOrderId(UUID.fromString(paymentRequest.orderId)) ?: run {
             logger.error("Payment with order id: ${paymentRequest.orderId} could not be find!")
-            throw PaymentApplicationServiceException("Payment with order id: ${paymentRequest.orderId} could not be found!")
+            throw PaymentNotFoundException("Payment with order id: ${paymentRequest.orderId} could not be found!")
         }
         val creditEntry = getCreditEntry(payment.customerId)
         val creditHistories = getCreditHistory(payment.customerId)
@@ -83,7 +83,6 @@ class PaymentRequestHelper(
             creditEntry = creditEntry,
             creditHistories = creditHistories,
         )
-        return paymentEvent
     }
 
 

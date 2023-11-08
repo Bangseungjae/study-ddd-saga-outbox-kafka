@@ -14,7 +14,7 @@ class PaymentOutboxEntity(
     val id: UUID,
     val sagaId: UUID,
     val createdAt: ZonedDateTime,
-    val processedAt: ZonedDateTime,
+    val processedAt: ZonedDateTime?,
     val type: String,
     val payload: String,
 

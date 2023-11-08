@@ -5,6 +5,8 @@ dependencies {
     api(project(":infrastructure:kafka:kafka-consumer"))
     api(project(":infrastructure:kafka:kafka-producer"))
     api(project(":infrastructure:kafka:kafka-model"))
+
+    implementation("org.postgresql:postgresql")
 }
 
 

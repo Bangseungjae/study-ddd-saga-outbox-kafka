@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.kafka.support.SendResult
 import org.springframework.stereotype.Component
-import org.springframework.util.concurrent.ListenableFutureCallback
 import java.io.Serializable
 import java.util.concurrent.CompletableFuture
 import java.util.function.BiConsumer
@@ -31,7 +30,8 @@ class KafkaProducerImpl<K : Serializable, V : SpecificRecordBase>(
     }
 
     override fun send(
-        topicName: String, key: K,
+        topicName: String,
+        key: K,
         message: V,
         callback: BiConsumer<SendResult<K, V>, Throwable?>,
     ) {

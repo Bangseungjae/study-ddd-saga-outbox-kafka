@@ -12,7 +12,7 @@ data class OrderPaymentOutboxMessage(
     val id: UUID,
     val sagaId: UUID,
     val createdAt: ZonedDateTime,
-    var processedAt: ZonedDateTime = ZonedDateTime.now(ZoneId.of(KOREA_DATE_TIME)),
+    var processedAt: ZonedDateTime? = ZonedDateTime.now(ZoneId.of(KOREA_DATE_TIME)),
     val type: String,
     val payload: String,
     var sagaStatus: SagaStatus,

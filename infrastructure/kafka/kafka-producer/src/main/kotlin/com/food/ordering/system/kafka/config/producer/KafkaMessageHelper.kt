@@ -41,7 +41,6 @@ class KafkaMessageHelper(
                 val metadata = result.recordMetadata
                 logger.info("Received successful response from kafka for order id: $orderId Topic: ${metadata.topic()} " +
                         "Partition: ${metadata.partition()} Offset: ${metadata.offset()} Timestamp: ${metadata.timestamp()}")
-
                 outboxCallback.accept(outboxMessage, OutboxStatus.COMPLETED)
             } else {
                 logger.error("Error while sending $avroModelName with message: ${avroModel.toString()} and outbox type: " +
