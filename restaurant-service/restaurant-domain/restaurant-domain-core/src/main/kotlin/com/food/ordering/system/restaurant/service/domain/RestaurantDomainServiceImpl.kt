@@ -1,7 +1,6 @@
 package com.food.ordering.system.restaurant.service.domain
 
 import com.food.ordering.system.domain.KOREA_DATE_TIME
-import com.food.ordering.system.domain.event.publisher.DomainEventPublisher
 import com.food.ordering.system.domain.valueobject.OrderApprovalStatus
 import com.food.ordering.system.restaurant.service.domain.entity.Restaurant
 import com.food.ordering.system.restaurant.service.domain.event.OrderApprovalEvent
@@ -18,8 +17,6 @@ class RestaurantDomainServiceImpl : RestaurantDomainService {
     override fun validateOrder(
         restaurant: Restaurant,
         failureMessages: MutableList<String>,
-        orderApprovedEventDomainEventPublisher: DomainEventPublisher<OrderApprovedEvent>,
-        orderRejectedEventDomainEventPublisher: DomainEventPublisher<OrderRejectedEvent>,
     ): OrderApprovalEvent {
         logger.info("Validating order with id: ${restaurant.orderDetail.id.value}")
         restaurant.validateOrder(failureMessages)
@@ -32,7 +29,6 @@ class RestaurantDomainServiceImpl : RestaurantDomainService {
                 restaurantId = restaurant.id,
                 failureMessages = failureMessages,
                 createdAt = ZonedDateTime.now(ZoneId.of(KOREA_DATE_TIME)),
-                orderApprovedEventDomainEventPublisher = orderApprovedEventDomainEventPublisher,
             )
         } else {
             logger.info("Order is reject for order id: ${restaurant.orderDetail.id.value}")
@@ -42,7 +38,6 @@ class RestaurantDomainServiceImpl : RestaurantDomainService {
                 restaurantId = restaurant.id,
                 failureMessages = failureMessages,
                 createdAt = ZonedDateTime.now(ZoneId.of(KOREA_DATE_TIME)),
-                orderRejectedEventDomainEventPublisher = orderRejectedEventDomainEventPublisher,
             )
         }
     }

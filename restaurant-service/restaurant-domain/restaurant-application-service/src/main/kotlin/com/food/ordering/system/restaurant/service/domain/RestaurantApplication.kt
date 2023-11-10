@@ -5,5 +5,4 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 
 @SpringBootApplication
 @ConfigurationPropertiesScan(basePackages = ["com.food.ordering.system.restaurant.service.domain.config"])
-class RestaurantApplication {
-}
+class RestaurantApplication

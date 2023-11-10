@@ -30,6 +30,13 @@ include(":infrastructure:kafka:kafka-producer")
 
 // customer
 include("customer-service")
+include("customer-service:customer-container")
+include("customer-service:customer-application")
+include("customer-service:customer-dataaccess")
+include("customer-service:customer-messaging")
+include("customer-service:customer-domain")
+include("customer-service:customer-domain:customer-domain-core")
+include("customer-service:customer-domain:customer-application-service")
 
 
 // payment

@@ -6,7 +6,5 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 @ConfigurationPropertiesScan
 @SpringBootApplication(
     scanBasePackages = ["com.food.ordering.system.payment.service.domain"],
-//    scanBasePackageClasses = [PaymentServiceConfigData::class],
 )
-class PaymentDomainApplication {
-}
+class PaymentDomainApplication

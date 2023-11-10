@@ -12,6 +12,5 @@ abstract class OrderApprovalEvent(
     val createdAt: ZonedDateTime,
 ) : DomainEvent<OrderApproval> {
 
-    open fun fire() {}
 }
 

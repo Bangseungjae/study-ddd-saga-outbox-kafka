@@ -10,7 +10,5 @@ interface RestaurantDomainService {
     fun validateOrder(
         restaurant: Restaurant,
         failureMessages: MutableList<String>,
-        orderApprovedEventDomainEventPublisher: DomainEventPublisher<OrderApprovedEvent>,
-        orderRejectedEventDomainEventPublisher: DomainEventPublisher<OrderRejectedEvent>,
     ): OrderApprovalEvent
 }

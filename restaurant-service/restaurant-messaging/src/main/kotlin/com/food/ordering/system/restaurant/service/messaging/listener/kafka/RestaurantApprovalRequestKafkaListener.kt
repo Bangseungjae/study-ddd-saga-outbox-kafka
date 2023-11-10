@@ -2,9 +2,11 @@ package com.food.ordering.system.restaurant.service.messaging.listener.kafka
 
 import com.food.ordering.system.kafka.consumer.KafkaConsumer
 import com.food.ordering.system.kafka.order.avro.model.RestaurantApprovalRequestAvroModel
+import com.food.ordering.system.restaurant.service.domain.exception.RestaurantNotFoundException
 import com.food.ordering.system.restaurant.service.domain.ports.input.message.listener.RestaurantApprovalRequestMessageListener
 import com.food.ordering.system.restaurant.service.messaging.mapper.toRestaurantApproval
 import org.slf4j.LoggerFactory
+import org.springframework.dao.DataAccessException
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.kafka.support.KafkaHeaders
 import org.springframework.messaging.handler.annotation.Header
@@ -32,8 +34,20 @@ class RestaurantApprovalRequestKafkaListener(
                 "partitions ${partitions.toString()} and offsets: ${offsets.toString()}, sending for request approval")
 
         messages.forEach{restaurantApprovalRequestAvroModel ->
-            restaurantApprovalRequestMessageListener
-                .approveOrder(restaurantApprovalRequestAvroModel.toRestaurantApproval())
+            try {
+                restaurantApprovalRequestMessageListener
+                    .approveOrder(restaurantApprovalRequestAvroModel.toRestaurantApproval())
+            } catch (e: DataAccessException) {
+                //NO-OP for unique constraint exception
+                logger.error(
+                    "Caught unique constraint exception with sql state: ${e.rootCause} " +
+                            "in RestaurantApprovalRequestKafkaListener for order id: ${restaurantApprovalRequestAvroModel.orderId}"
+                )
+            } catch (e: RestaurantNotFoundException) {
+                //NO-OP for RestaurantNotFoundException
+                logger.error("No restaurant found for restaurant id: ${restaurantApprovalRequestAvroModel.restaurantId}, " +
+                        "and order id: ${restaurantApprovalRequestAvroModel.orderId}")
+            }
         }
     }
 }

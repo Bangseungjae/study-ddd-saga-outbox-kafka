@@ -34,7 +34,7 @@ class Order(
 
     fun approve() {
         if (orderStatus != OrderStatus.PAID) {
-            throw OrderDomainException("ORder is not in correct state for approve operation!")
+            throw OrderDomainException("Order is not in correct state for approve operation!")
         }
         orderStatus = OrderStatus.APPROVED
     }

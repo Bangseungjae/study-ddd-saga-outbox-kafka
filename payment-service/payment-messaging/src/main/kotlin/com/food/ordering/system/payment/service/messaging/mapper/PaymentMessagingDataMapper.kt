@@ -11,13 +11,13 @@ import java.util.UUID
 
 fun OrderEventPayload.toPaymentResponseAvroModel(
     sagaId: String,
-): PaymentResponseAvroModel  = run {
+): PaymentResponseAvroModel = run {
     PaymentResponseAvroModel.newBuilder()
         .setId(UUID.randomUUID())
         .setSagaId(UUID.fromString(sagaId))
         .setPaymentId(UUID.fromString(paymentId))
         .setCustomerId(UUID.fromString(customerId))
-        .setOrderId(UUID.fromString(customerId))
+        .setOrderId(UUID.fromString(orderId))
         .setPrice(price)
         .setCreatedAt(createdAt.toInstant())
         .setPaymentStatus(PaymentStatus.valueOf(paymentStatus))

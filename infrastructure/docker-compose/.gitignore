@@ -1,4 +1,2 @@
 # volmue
-./volumes/
-./volumes/zookeeper
-./volumes/kafka
+./volumes/**

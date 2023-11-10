@@ -35,12 +35,15 @@ class PaymentRequestKafkaListener(
         @Header(KafkaHeaders.RECEIVED_PARTITION) partitions: List<Int>,
         @Header(KafkaHeaders.OFFSET) offsets: List<Long>,
     ) {
-        logger.info("${messages.size} number of payment requests received with keys: $keys, " +
-                "partitions: $partitions and offsets: $offsets")
+        logger.info(
+            "${messages.size} number of payment requests received with keys: $keys, " +
+                    "partitions: $partitions and offsets: $offsets"
+        )
 
         logger.info("kafka listener messages size: ${messages.size}")
-        messages.forEach {paymentRequestAvroModel ->
+        messages.forEach { paymentRequestAvroModel ->
             try {
+                logger.info("Customer id: ${paymentRequestAvroModel.orderId}")
                 if (PaymentOrderStatus.PENDING == paymentRequestAvroModel.paymentOrderStatus) {
                     logger.info("Processing payment for order id: ${paymentRequestAvroModel.orderId}")
                     paymentRequestMessageListener.completePayment(
@@ -68,6 +71,7 @@ class PaymentRequestKafkaListener(
                                     "in PaymentRequestKafkaListener for order id: ${paymentRequestAvroModel.orderId}"
                         )
                     }
+
                     else -> {
                         throw PaymentApplicationServiceException(
                             "Throwing DataAccessException in " +

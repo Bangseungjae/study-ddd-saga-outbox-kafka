@@ -1,14 +1,15 @@
 package com.food.ordering.system.restaurant.service.domain
 
 import com.food.ordering.system.domain.valueobject.OrderId
+import com.food.ordering.system.outbox.OutboxStatus
 import com.food.ordering.system.restaurant.service.domain.dto.RestaurantApprovalRequest
 import com.food.ordering.system.restaurant.service.domain.entity.Product
 import com.food.ordering.system.restaurant.service.domain.entity.Restaurant
 import com.food.ordering.system.restaurant.service.domain.event.OrderApprovalEvent
 import com.food.ordering.system.restaurant.service.domain.exception.RestaurantNotFoundException
 import com.food.ordering.system.restaurant.service.domain.mapper.RestaurantDataMapper
-import com.food.ordering.system.restaurant.service.domain.ports.output.message.publisher.OrderApprovedMessagePublisher
-import com.food.ordering.system.restaurant.service.domain.ports.output.message.publisher.OrderRejectedMessagePublisher
+import com.food.ordering.system.restaurant.service.domain.outbox.scheduler.OrderOutboxHelper
+import com.food.ordering.system.restaurant.service.domain.ports.output.message.publisher.RestaurantApprovalResponseMessagePublisher
 import com.food.ordering.system.restaurant.service.domain.ports.output.repository.OrderApprovalRepository
 import com.food.ordering.system.restaurant.service.domain.ports.output.repository.RestaurantRepository
 import org.slf4j.LoggerFactory
@@ -22,25 +23,34 @@ class RestaurantApprovalRequestHelper(
     private val restaurantDataMapper: RestaurantDataMapper,
     private val restaurantRepository: RestaurantRepository,
     private val orderApprovalRepository: OrderApprovalRepository,
-    private val orderApprovedMessagePublisher: OrderApprovedMessagePublisher,
-    private val orderRejectedMessagePublisher: OrderRejectedMessagePublisher,
+    private val orderOutboxHelper: OrderOutboxHelper,
+    private val restaurantApprovalResponseMessagePublisher: RestaurantApprovalResponseMessagePublisher,
 ) {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
 
     @Transactional
-    fun persistOrderApproval(restaurantApprovalRequest: RestaurantApprovalRequest): OrderApprovalEvent {
+    fun persistOrderApproval(restaurantApprovalRequest: RestaurantApprovalRequest) {
+
+        if (publishIfOutboxMessageProcessed(restaurantApprovalRequest)) {
+            logger.info("An outbox message with saga id: ${restaurantApprovalRequest.id} already saved to database!")
+        }
+
         logger.info("Processing restaurant approval for order id: ${restaurantApprovalRequest.orderId}")
         val failureMessages = mutableListOf<String>()
         val restaurant: Restaurant = findRestaurant(restaurantApprovalRequest)
         val orderApprovalEvent = restaurantDomainService.validateOrder(
             restaurant = restaurant,
             failureMessages = failureMessages,
-            orderApprovedEventDomainEventPublisher = orderApprovedMessagePublisher,
-            orderRejectedEventDomainEventPublisher = orderRejectedMessagePublisher,
         )
         orderApprovalRepository.save(restaurant.orderApproval)
-        return orderApprovalEvent
+
+        orderOutboxHelper.saveOrderOutboxMessage(
+            orderEventPayload = restaurantDataMapper.orderApprovalEventToEventPayload(orderApprovalEvent),
+            approvalStatus = orderApprovalEvent.orderApproval.orderApprovalStatus,
+            outboxStatus = OutboxStatus.STARTED,
+            sagaId = UUID.fromString(restaurantApprovalRequest.sagaId),
+        )
     }
 
     private fun findRestaurant(restaurantApprovalRequest: RestaurantApprovalRequest): Restaurant {
@@ -66,5 +76,18 @@ class RestaurantApprovalRequestHelper(
         }
         restaurant.orderDetail.id = OrderId(UUID.fromString(restaurantApprovalRequest.orderId))
         return restaurant
+    }
+
+    private fun publishIfOutboxMessageProcessed(restaurantApprovalRequest: RestaurantApprovalRequest): Boolean {
+        orderOutboxHelper.getCompletedOrderOutboxMessageBySagaIdAndOutboxStatus(
+            sagaId = UUID.fromString(restaurantApprovalRequest.sagaId),
+            outboxStatus = OutboxStatus.COMPLETED
+        )?.let {
+            restaurantApprovalResponseMessagePublisher.publish(
+                orderOutboxMessage = it,
+                outboxCallback = orderOutboxHelper::updateOutboxMessage
+            )
+            return true
+        } ?: return false
     }
 }

@@ -18,6 +18,7 @@ dependencies {
 
     api(project(":common:common-domain"))
     api(project(":restaurant-service:restaurant-domain:restaurant-application-service"))
+    api(project(":infrastructure:outbox"))
 
     // Database
     // https://mvnrepository.com/artifact/org.postgresql/postgresql

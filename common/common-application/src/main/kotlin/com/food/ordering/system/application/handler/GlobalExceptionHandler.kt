@@ -52,7 +52,5 @@ class GlobalExceptionHandler {
     }
 
     private fun extractViolationsFromException(validationException: ConstraintViolationException): String =
-        validationException.constraintViolations
-            .map {  it.message }
-            .joinToString(separator = "--")
+        validationException.constraintViolations.joinToString(separator = "--") { it.message }
 }

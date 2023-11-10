@@ -35,6 +35,9 @@ class OrderApprovalSaga(
 
     @Transactional
     override fun process(restaurantApprovalResponse: RestaurantApprovalResponse) {
+
+        logger.info("restaurantApprovalResponse: saga id: ${restaurantApprovalResponse.sagaId}")
+
         val approvalOutboxMessage =
             approvalOutboxHelper.getApprovalOutboxMessageBySagaIdAndSagaStatus(
                 sagaId = UUID.fromString(restaurantApprovalResponse.sagaId),
@@ -112,7 +115,7 @@ class OrderApprovalSaga(
     ): OrderPaymentOutboxMessage {
         val orderPaymentOutboxMessage = paymentOutboxHelper.getPaymentOutboxMessageBySagaIdAndSagaStatus(
             sagaId = UUID.fromString(sagaId),
-            sagaStatus = arrayOf(sagaStatus),
+            sagaStatus = arrayOf(PROCESSING),
         ) ?: run {
             throw OrderDomainException("Payment outbox message cannot be found! in ${PROCESSING.name} state")
         }
@@ -138,7 +141,6 @@ class OrderApprovalSaga(
         val order: Order = orderSagaHelper.findOrder(restaurantApprovalResponse.orderId)
         orderDomainService.approveOrder(order)
         orderSagaHelper.saveOrder(order)
-
         return order
     }
 

@@ -33,7 +33,7 @@ class OrderOutboxScheduler (
         outboxMessageResponse.forEach {orderOutboxMessage ->
             paymentResponseMessagePublisher.publish(
                 orderOutboxMessage = orderOutboxMessage,
-                callback = orderOutboxHelper::updateOutboxMessage
+                callback = orderOutboxHelper::updateOutboxMessage,
             )
         }
         logger.info("${outboxMessageResponse.size} OrderOutboxMessage sent to message bus!")

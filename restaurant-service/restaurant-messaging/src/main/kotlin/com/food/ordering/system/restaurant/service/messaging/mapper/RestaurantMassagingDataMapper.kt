@@ -9,16 +9,17 @@ import com.food.ordering.system.restaurant.service.domain.dto.RestaurantApproval
 import com.food.ordering.system.restaurant.service.domain.entity.Product
 import com.food.ordering.system.restaurant.service.domain.event.OrderApprovalEvent
 import com.food.ordering.system.restaurant.service.domain.event.OrderRejectedEvent
+import com.food.ordering.system.restaurant.service.domain.outbox.model.OrderEventPayload
 import java.util.UUID
 
-fun OrderApprovalEvent.toRestaurantApprovalResponseAvroModel(): RestaurantApprovalResponseAvroModel = run {
+fun OrderEventPayload.toRestaurantApprovalResponseAvroModel(sagaId: String): RestaurantApprovalResponseAvroModel = run {
     RestaurantApprovalResponseAvroModel.newBuilder()
         .setId(UUID.randomUUID())
-        .setSagaId(UUID.randomUUID())
-        .setOrderId(orderApproval.orderId.value)
-        .setRestaurantId(orderApproval.restaurantId.value)
+        .setSagaId(UUID.fromString(sagaId))
+        .setOrderId(UUID.fromString(orderId))
+        .setRestaurantId(UUID.fromString(restaurantId))
         .setCreatedAt(createdAt.toInstant())
-        .setOrderApprovalStatus(OrderApprovalStatus.valueOf(orderApproval.orderApprovalStatus.name))
+        .setOrderApprovalStatus(OrderApprovalStatus.valueOf(orderApprovalStatus))
         .setFailureMessages(failureMessages)
         .build()
 }

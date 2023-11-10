@@ -8,6 +8,8 @@ import com.food.ordering.system.restaurant.service.domain.dto.RestaurantApproval
 import com.food.ordering.system.restaurant.service.domain.entity.OrderDetail
 import com.food.ordering.system.restaurant.service.domain.entity.Product
 import com.food.ordering.system.restaurant.service.domain.entity.Restaurant
+import com.food.ordering.system.restaurant.service.domain.event.OrderApprovalEvent
+import com.food.ordering.system.restaurant.service.domain.outbox.model.OrderEventPayload
 import org.springframework.stereotype.Component
 import java.util.UUID
 
@@ -29,6 +31,16 @@ class RestaurantDataMapper {
                 orderStatus = OrderStatus.valueOf(restaurantApprovalRequest.restaurantOrderStatus.name),
                 totalAmount = Money(restaurantApprovalRequest.price)
             ),
+        )
+    }
+
+    fun orderApprovalEventToEventPayload(orderApprovalEvent: OrderApprovalEvent): OrderEventPayload {
+        return OrderEventPayload(
+            orderId = orderApprovalEvent.orderApproval.orderId.value.toString(),
+            restaurantId = orderApprovalEvent.restaurantId.value.toString(),
+            createdAt = orderApprovalEvent.createdAt,
+            orderApprovalStatus = orderApprovalEvent.orderApproval.orderApprovalStatus.name,
+            failureMessages = orderApprovalEvent.failureMessages,
         )
     }
 }

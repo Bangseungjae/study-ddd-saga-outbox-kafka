@@ -17,8 +17,7 @@ class CreditEntryRepositoryImpl(
             creditEntryJpaRepository.save(creditEntryDataAccessMapper.creditEntryToCreditEntryEntity(creditEntry))
         )
 
-    override fun findByCustomerId(customerId: CustomerId): CreditEntry? {
-        return creditEntryJpaRepository.findByCustomerId(customerId.value)
+    override fun findByCustomerId(customerId: CustomerId): CreditEntry? =
+        creditEntryJpaRepository.findByCustomerId(customerId.value)
             ?.let { creditEntryDataAccessMapper.creditEntryEntityToCreditEntry(it) }
-    }
 }
