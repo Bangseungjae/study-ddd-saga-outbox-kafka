@@ -5,10 +5,14 @@ import jakarta.persistence.Id
 import jakarta.persistence.Table
 import java.util.UUID
 
-@Table(name = "order_customer_m_view", schema = "customer")
+@Table(name = "customers")
 @Entity
 class CustomerEntity(
     @Id
     val id: UUID,
+
+    val username: String,
+    val firstName: String,
+    val lastName: String,
 ) {
 }

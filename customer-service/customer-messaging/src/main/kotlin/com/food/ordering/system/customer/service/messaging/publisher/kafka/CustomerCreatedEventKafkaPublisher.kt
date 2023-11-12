@@ -33,8 +33,10 @@ class CustomerCreatedEventKafkaPublisher(
                 )
             )
         } catch (e: Exception) {
-            logger.error("Error while sending CustomerCreatedEvent to kafka for customer id: " +
-                    "${customerCreatedEvent.customer.id.value} error: ${e.message}")
+            logger.error(
+                "Error while sending CustomerCreatedEvent to kafka for customer id: " +
+                        "${customerCreatedEvent.customer.id.value} error: ${e.message}"
+            )
         }
     }
 
@@ -44,11 +46,13 @@ class CustomerCreatedEventKafkaPublisher(
     ): BiConsumer<SendResult<String, CustomerAvroModel>, Throwable?> {
         return BiConsumer { result, ex ->
             ex?.run {
-                val metadata = result.recordMetadata
-                logger.info("Received new metadata Topic: ${metadata.topic()}; Partition: ${metadata.partition()}; " +
-                        "Offset: ${metadata.offset()}; Timestamp: ${metadata.timestamp()}; at time: ${System.nanoTime()}")
-            } ?: run {
                 logger.error("Error while sending message $message to topic $topicName")
+            } ?: run {
+                val metadata = result.recordMetadata
+                logger.info(
+                    "Received new metadata Topic: ${metadata.topic()}; Partition: ${metadata.partition()}; " +
+                            "Offset: ${metadata.offset()}; Timestamp: ${metadata.timestamp()}; at time: ${System.nanoTime()}"
+                )
             }
         }
     }

@@ -18,4 +18,12 @@ class CustomerRepositoryImpl(
             .orElseThrow { IllegalArgumentException("customer not found id: $customerId") }
         return customerDataAccessMapper.customerEntityToCustomer(customerEntity)
     }
+
+    override fun save(customer: Customer): Customer {
+        return customerDataAccessMapper.customerEntityToCustomer(
+            customerJpaRepository.save(
+                customerDataAccessMapper.customerToCustomerEntity(customer)
+            )
+        )
+    }
 }

@@ -4,11 +4,9 @@ import com.food.ordering.system.domain.valueobject.*
 import com.food.ordering.system.order.service.domain.dto.create.CreateOrderCommand
 import com.food.ordering.system.order.service.domain.dto.create.CreateOrderResponse
 import com.food.ordering.system.order.service.domain.dto.create.OrderAddress
+import com.food.ordering.system.order.service.domain.dto.message.CustomerModel
 import com.food.ordering.system.order.service.domain.dto.track.TrackOrderResponse
-import com.food.ordering.system.order.service.domain.entity.Order
-import com.food.ordering.system.order.service.domain.entity.OrderItem
-import com.food.ordering.system.order.service.domain.entity.Product
-import com.food.ordering.system.order.service.domain.entity.Restaurant
+import com.food.ordering.system.order.service.domain.entity.*
 import com.food.ordering.system.order.service.domain.event.OrderCancelledEvent
 import com.food.ordering.system.order.service.domain.event.OrderCreatedEvent
 import com.food.ordering.system.order.service.domain.event.OrderPaidEvent
@@ -118,4 +116,11 @@ class OrderDataMapper {
             createdAt = orderCancelledEvent.createdAt,
             paymentOrderStatus = PaymentOrderStatus.CANCELLED.name,
         )
+
+    fun customerModelToCustomer(customerModel: CustomerModel): Customer = Customer(
+        customerId = CustomerId(UUID.fromString(customerModel.id)),
+        username = customerModel.username,
+        firstName = customerModel.firstName,
+        lastName = customerModel.lastName,
+    )
 }

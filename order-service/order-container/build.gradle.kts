@@ -1,5 +1,4 @@
 import org.springframework.boot.gradle.tasks.bundling.BootBuildImage
-import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 dependencies {
     api(project(":order-service:order-domain:order-application-service"))
@@ -16,10 +15,3 @@ tasks.getByName<BootBuildImage>("bootBuildImage") {
     environment = mapOf("--platform" to "linux/arm64")
 }
 
-tasks.named<BootJar>("bootJar") {
-    enabled = false
-}
-
-tasks.named<Jar>("jar") {
-    enabled = true
-}

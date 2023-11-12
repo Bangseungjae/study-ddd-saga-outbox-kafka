@@ -1,5 +1,4 @@
 import com.github.davidmc24.gradle.plugin.avro.GenerateAvroJavaTask
-import org.jetbrains.kotlin.js.backend.ast.JsEmpty.source
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
@@ -21,6 +20,6 @@ tasks.named<Jar>("jar") {
 }
 
 
-tasks.named("compileJava").configure {
-    source(generateAvro)
-}
+//tasks.named("compileJava").configure {
+//    source(generateAvro)
+//}

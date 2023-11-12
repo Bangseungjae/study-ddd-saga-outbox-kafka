@@ -5,6 +5,9 @@ import com.food.ordering.system.domain.valueobject.CustomerId
 import java.util.UUID
 
 class Customer(
-    customerId: CustomerId
+    customerId: CustomerId,
+    val username: String,
+    val firstName: String,
+    val lastName: String,
 ) : AggregateRoot<CustomerId>(customerId) {
 }

@@ -8,8 +8,18 @@ import org.springframework.stereotype.Component
 @Component
 class CustomerDataAccessMapper {
 
-    fun customerEntityToCustomer(customerEntity: CustomerEntity?): Customer? =
-        customerEntity?.let {
-            Customer(customerId = CustomerId(it.id))
-        }
+    fun customerEntityToCustomer(customerEntity: CustomerEntity): Customer = Customer(
+        customerId = CustomerId(customerEntity.id),
+        username = customerEntity.username,
+        firstName = customerEntity.firstName,
+        lastName = customerEntity.lastName,
+    )
+
+
+    fun customerToCustomerEntity(customer: Customer): CustomerEntity = CustomerEntity(
+        id = customer.id.value,
+        username = customer.username,
+        firstName = customer.firstName,
+        lastName = customer.lastName,
+    )
 }
