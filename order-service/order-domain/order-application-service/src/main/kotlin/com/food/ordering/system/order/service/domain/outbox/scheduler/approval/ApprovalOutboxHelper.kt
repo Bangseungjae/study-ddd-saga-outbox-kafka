@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.food.ordering.system.domain.valueobject.OrderStatus
 import com.food.ordering.system.order.service.domain.exception.OrderDomainException
-import com.food.ordering.system.order.service.domain.outbox.model.approval.OrderApprovalEventPayload
+import com.food.ordering.system.domain.event.payload.OrderApprovalEventPayload
 import com.food.ordering.system.order.service.domain.outbox.model.approval.OrderApprovalOutboxMessage
 import com.food.ordering.system.order.service.domain.ports.output.repository.ApprovalOutboxRepository
 import com.food.ordering.system.outbox.OutboxStatus
@@ -51,7 +51,7 @@ class ApprovalOutboxHelper(
     fun save(orderApprovalOutboxMessage: OrderApprovalOutboxMessage) {
 
         try {
-            val response = approvalOutboxRepository.save(orderApprovalOutboxMessage)
+            approvalOutboxRepository.save(orderApprovalOutboxMessage)
         } catch (e: Exception) {
             logger.error("Could not save OrderApprovalOutboxMessage with outbox id: ${orderApprovalOutboxMessage.id}")
             throw OrderDomainException("Could not save OrderApprovalOutboxMessage with outbox id: ${orderApprovalOutboxMessage.id}")

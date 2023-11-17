@@ -1,4 +1,4 @@
-package com.food.ordering.system.domain.event
+package com.food.ordering.system.domain.event.payload
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.food.ordering.system.domain.valueobject.PaymentOrderStatus

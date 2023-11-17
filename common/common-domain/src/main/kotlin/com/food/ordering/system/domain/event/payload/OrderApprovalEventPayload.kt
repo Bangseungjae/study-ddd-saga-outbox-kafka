@@ -1,7 +1,6 @@
-package com.food.ordering.system.order.service.domain.outbox.model.approval
+package com.food.ordering.system.domain.event.payload
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.food.ordering.system.domain.valueobject.RestaurantOrderStatus
 import java.math.BigDecimal
 import java.time.ZonedDateTime
 

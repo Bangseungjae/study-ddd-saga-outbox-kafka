@@ -95,7 +95,10 @@ class OrderApprovalSaga(
         )
 
         paymentOutboxHelper.savePaymentOutboxMessage(
-            paymentEventPayload = orderDataMapper.orderCancelledEventToOrderPaymentEventPayload(domainEvent),
+            paymentEventPayload = orderDataMapper.orderCancelledEventToOrderPaymentEventPayload(
+                orderCancelledEvent = domainEvent,
+                sagaId = restaurantApprovalResponse.sagaId,
+            ),
             orderStatus = domainEvent.order.orderStatus,
             sagaStatus = sagaStatus,
             outboxStatus = OutboxStatus.STARTED,

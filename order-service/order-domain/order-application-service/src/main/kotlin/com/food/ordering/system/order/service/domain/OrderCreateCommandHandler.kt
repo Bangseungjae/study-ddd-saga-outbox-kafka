@@ -35,9 +35,13 @@ class OrderCreateCommandHandler(
             order = orderCreatedEvent.order,
             message = "Order created successfully"
         )
+        val sagaId = UUID.randomUUID()
         paymentOutboxHelper.savePaymentOutboxMessage(
-            sagaId = UUID.randomUUID(),
-            paymentEventPayload = orderDataMapper.orderCreatedEventToOrderPaymentEventPayload(orderCreatedEvent),
+            sagaId = sagaId,
+            paymentEventPayload = orderDataMapper.orderCreatedEventToOrderPaymentEventPayload(
+                orderCreatedEvent = orderCreatedEvent,
+                sagaId = sagaId.toString(),
+            ),
             sagaStatus = orderSagaHelper.orderStatusToSagaStatus(orderCreatedEvent.order.orderStatus),
             orderStatus = orderCreatedEvent.order.orderStatus,
             outboxStatus = OutboxStatus.STARTED,

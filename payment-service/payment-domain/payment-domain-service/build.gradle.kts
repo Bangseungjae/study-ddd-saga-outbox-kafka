@@ -5,6 +5,7 @@ dependencies {
     api(project(":payment-service:payment-domain:payment-domain-core"))
     api(project(":infrastructure:outbox"))
     api(project(":infrastructure:saga"))
+    api(project(":common:common-messaging"))
 
     implementation("org.springframework.boot:spring-boot-starter-json")
     implementation("org.springframework.boot:spring-boot-starter-test")

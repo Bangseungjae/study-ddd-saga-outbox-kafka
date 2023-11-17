@@ -4,7 +4,7 @@ import com.food.ordering.system.order.service.domain.dto.message.CustomerModel
 import com.food.ordering.system.order.service.domain.entity.Customer
 import com.food.ordering.system.order.service.domain.exception.OrderDomainException
 import com.food.ordering.system.order.service.domain.mapper.OrderDataMapper
-import com.food.ordering.system.order.service.domain.ports.output.message.publisher.customer.CustomerMessageListener
+import com.food.ordering.system.order.service.domain.ports.input.message.listener.customer.CustomerMessageListener
 import com.food.ordering.system.order.service.domain.ports.output.repository.CustomerRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component

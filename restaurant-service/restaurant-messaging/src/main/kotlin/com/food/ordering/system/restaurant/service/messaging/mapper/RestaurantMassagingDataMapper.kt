@@ -1,58 +1,32 @@
 package com.food.ordering.system.restaurant.service.messaging.mapper
 
+import com.food.ordering.system.domain.event.payload.OrderApprovalEventPayload
 import com.food.ordering.system.domain.valueobject.ProductId
-import com.food.ordering.system.kafka.order.avro.model.OrderApprovalStatus
-import com.food.ordering.system.kafka.order.avro.model.RestaurantApprovalRequestAvroModel
-import com.food.ordering.system.kafka.order.avro.model.RestaurantApprovalResponseAvroModel
-import com.food.ordering.system.kafka.order.avro.model.RestaurantOrderStatus
+import com.food.ordering.system.domain.valueobject.RestaurantOrderStatus
 import com.food.ordering.system.restaurant.service.domain.dto.RestaurantApprovalRequest
 import com.food.ordering.system.restaurant.service.domain.entity.Product
-import com.food.ordering.system.restaurant.service.domain.event.OrderApprovalEvent
-import com.food.ordering.system.restaurant.service.domain.event.OrderRejectedEvent
-import com.food.ordering.system.restaurant.service.domain.outbox.model.OrderEventPayload
+import debezium.order.restaurant_approval_outbox.Value
+import java.time.Instant
 import java.util.UUID
 
-fun OrderEventPayload.toRestaurantApprovalResponseAvroModel(sagaId: String): RestaurantApprovalResponseAvroModel = run {
-    RestaurantApprovalResponseAvroModel.newBuilder()
-        .setId(UUID.randomUUID())
-        .setSagaId(UUID.fromString(sagaId))
-        .setOrderId(UUID.fromString(orderId))
-        .setRestaurantId(UUID.fromString(restaurantId))
-        .setCreatedAt(createdAt.toInstant())
-        .setOrderApprovalStatus(OrderApprovalStatus.valueOf(orderApprovalStatus))
-        .setFailureMessages(failureMessages)
-        .build()
-}
 
-fun OrderRejectedEvent.toRestaurantApprovalResponseAvroModel(): RestaurantApprovalResponseAvroModel = run {
-    RestaurantApprovalResponseAvroModel.newBuilder()
-        .setId(UUID.randomUUID())
-        .setSagaId(UUID.randomUUID())
-        .setOrderId(orderApproval.orderId.value)
-        .setRestaurantId(orderApproval.restaurantId.value)
-        .setCreatedAt(createdAt.toInstant())
-        .setOrderApprovalStatus(OrderApprovalStatus.valueOf(orderApproval.orderApprovalStatus.name))
-        .setFailureMessages(failureMessages)
-        .build()
-}
-
-fun RestaurantApprovalRequestAvroModel.toRestaurantApproval(): RestaurantApprovalRequest = run {
+fun OrderApprovalEventPayload.toRestaurantApproval(
+    restaurantApprovalRequestAvroModel: Value,
+): RestaurantApprovalRequest = run {
     RestaurantApprovalRequest(
-        id = id.toString(),
-        sagaId = sagaId.toString(),
-        restaurantId = restaurantId.toString(),
-        orderId = orderId.toString(),
-        restaurantOrderStatus = com.food.ordering.system.domain.valueobject.RestaurantOrderStatus.valueOf(
-            restaurantOrderStatus.name
-        ),
-        projects = products.map { avroModel ->
+        id = restaurantApprovalRequestAvroModel.id,
+        sagaId = restaurantApprovalRequestAvroModel.sagaId,
+        restaurantId = restaurantId,
+        orderId = orderId,
+        restaurantOrderStatus = RestaurantOrderStatus.valueOf(restaurantOrderStatus),
+        projects = products.map {
             Product(
-                id = ProductId(UUID.fromString(avroModel.id)),
-                quantity = avroModel.quantity,
+                id = ProductId(UUID.fromString(it.id)),
+                quantity = it.quantity,
                 available = true,
             )
         },
         price = price,
-        createdAt = createdAt
+        createdAt = Instant.parse(restaurantApprovalRequestAvroModel.createdAt)
     )
 }

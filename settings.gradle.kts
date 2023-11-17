@@ -17,6 +17,7 @@ include("common")
 include("common:common-domain")
 include("common:common-application")
 include(":common:common-dataaccess")
+include(":common:common-messaging")
 
 // infra
 include(":infrastructure")

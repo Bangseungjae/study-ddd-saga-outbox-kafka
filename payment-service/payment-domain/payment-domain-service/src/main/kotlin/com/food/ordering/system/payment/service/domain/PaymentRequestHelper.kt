@@ -12,7 +12,6 @@ import com.food.ordering.system.payment.service.domain.exception.PaymentApplicat
 import com.food.ordering.system.payment.service.domain.exception.PaymentNotFoundException
 import com.food.ordering.system.payment.service.domain.mapper.PaymentDataMapper
 import com.food.ordering.system.payment.service.domain.outbox.scheduler.OrderOutboxHelper
-import com.food.ordering.system.payment.service.domain.ports.output.output.message.publisher.PaymentResponseMessagePublisher
 import com.food.ordering.system.payment.service.domain.ports.output.output.repostiroy.CreditEntryRepository
 import com.food.ordering.system.payment.service.domain.ports.output.output.repostiroy.CreditHistoryRepository
 import com.food.ordering.system.payment.service.domain.ports.output.output.repostiroy.PaymentRepository
@@ -29,7 +28,6 @@ class PaymentRequestHelper(
     private val creditEntryRepository: CreditEntryRepository,
     private val creditHistoryRepository: CreditHistoryRepository,
     private val orderOutboxHelper: OrderOutboxHelper,
-    private val paymentResponseMessagePublisher: PaymentResponseMessagePublisher,
 ) {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
@@ -64,7 +62,7 @@ class PaymentRequestHelper(
     @Transactional
     fun persistCancelPayment(paymentRequest: PaymentRequest) {
 
-        if (publishIfOutboxMessageProcessedForPayment(paymentRequest, PaymentStatus.CANCELLED)) {
+        if (isOutboxMessageProcessedForPayment(paymentRequest, PaymentStatus.CANCELLED)) {
             logger.info("An outbox message with saga id: ${paymentRequest.sagaId} is already saved to database!")
             return
         }
@@ -128,7 +126,7 @@ class PaymentRequestHelper(
         }
     }
 
-    private fun publishIfOutboxMessageProcessedForPayment(
+    private fun isOutboxMessageProcessedForPayment(
         paymentRequest: PaymentRequest,
         paymentStatus: PaymentStatus,
     ): Boolean {
@@ -136,10 +134,6 @@ class PaymentRequestHelper(
             sagaId = UUID.fromString(paymentRequest.sagaId),
             paymentStatus = paymentStatus,
         )?.let {
-            paymentResponseMessagePublisher.publish(
-                orderOutboxMessage = it,
-                callback = orderOutboxHelper::updateOutboxMessage
-            )
             return true
         } ?:run {
             return false

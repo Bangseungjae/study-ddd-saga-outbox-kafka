@@ -1,11 +1,14 @@
 package com.food.ordering.system.payment.service.messaging.mapper
 
+import com.food.ordering.system.domain.event.payload.OrderPaymentEventPayload
 import com.food.ordering.system.domain.valueobject.PaymentOrderStatus
 import com.food.ordering.system.kafka.order.avro.model.PaymentRequestAvroModel
 import com.food.ordering.system.kafka.order.avro.model.PaymentResponseAvroModel
 import com.food.ordering.system.kafka.order.avro.model.PaymentStatus
 import com.food.ordering.system.payment.service.domain.dto.PaymentRequest
 import com.food.ordering.system.payment.service.domain.outbox.model.OrderEventPayload
+import debezium.order.payment_outbox.Value
+import java.time.Instant
 import java.util.UUID
 
 
@@ -36,3 +39,17 @@ fun PaymentRequestAvroModel.toPaymentRequest(): PaymentRequest = run {
         paymentOrderStatus = PaymentOrderStatus.valueOf(paymentOrderStatus.name)
     )
 }
+
+fun OrderPaymentEventPayload.toPaymentRequest(paymentRequestAvroModel: Value): PaymentRequest = run {
+    PaymentRequest(
+        id = paymentRequestAvroModel.id,
+        sagaId = paymentRequestAvroModel.sagaId,
+        customerId = customerId,
+        orderId = orderId,
+        price = price,
+        createdAt = Instant.parse(paymentRequestAvroModel.createdAt),
+        paymentOrderStatus = PaymentOrderStatus.valueOf(paymentOrderStatus)
+    )
+}
+
+

@@ -5,11 +5,9 @@ import com.food.ordering.system.outbox.OutboxStatus
 import com.food.ordering.system.restaurant.service.domain.dto.RestaurantApprovalRequest
 import com.food.ordering.system.restaurant.service.domain.entity.Product
 import com.food.ordering.system.restaurant.service.domain.entity.Restaurant
-import com.food.ordering.system.restaurant.service.domain.event.OrderApprovalEvent
 import com.food.ordering.system.restaurant.service.domain.exception.RestaurantNotFoundException
 import com.food.ordering.system.restaurant.service.domain.mapper.RestaurantDataMapper
 import com.food.ordering.system.restaurant.service.domain.outbox.scheduler.OrderOutboxHelper
-import com.food.ordering.system.restaurant.service.domain.ports.output.message.publisher.RestaurantApprovalResponseMessagePublisher
 import com.food.ordering.system.restaurant.service.domain.ports.output.repository.OrderApprovalRepository
 import com.food.ordering.system.restaurant.service.domain.ports.output.repository.RestaurantRepository
 import org.slf4j.LoggerFactory
@@ -24,7 +22,6 @@ class RestaurantApprovalRequestHelper(
     private val restaurantRepository: RestaurantRepository,
     private val orderApprovalRepository: OrderApprovalRepository,
     private val orderOutboxHelper: OrderOutboxHelper,
-    private val restaurantApprovalResponseMessagePublisher: RestaurantApprovalResponseMessagePublisher,
 ) {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
@@ -32,7 +29,7 @@ class RestaurantApprovalRequestHelper(
     @Transactional
     fun persistOrderApproval(restaurantApprovalRequest: RestaurantApprovalRequest) {
 
-        if (publishIfOutboxMessageProcessed(restaurantApprovalRequest)) {
+        if (isOutboxMessageProcessed(restaurantApprovalRequest)) {
             logger.info("An outbox message with saga id: ${restaurantApprovalRequest.id} already saved to database!")
         }
 
@@ -63,8 +60,8 @@ class RestaurantApprovalRequestHelper(
             }
 
         restaurant.active = true
-        restaurant.orderDetail.products.forEach{product: Product ->
-            restaurantEntity.orderDetail.products.forEach{p ->
+        restaurant.orderDetail.products.forEach { product: Product ->
+            restaurantEntity.orderDetail.products.forEach { p ->
                 if (p.id == product.id) {
                     product.updateWithConfirmedNamePriceAndAvailability(
                         name = p.name,
@@ -78,15 +75,11 @@ class RestaurantApprovalRequestHelper(
         return restaurant
     }
 
-    private fun publishIfOutboxMessageProcessed(restaurantApprovalRequest: RestaurantApprovalRequest): Boolean {
+    private fun isOutboxMessageProcessed(restaurantApprovalRequest: RestaurantApprovalRequest): Boolean {
         orderOutboxHelper.getCompletedOrderOutboxMessageBySagaIdAndOutboxStatus(
             sagaId = UUID.fromString(restaurantApprovalRequest.sagaId),
             outboxStatus = OutboxStatus.COMPLETED
         )?.let {
-            restaurantApprovalResponseMessagePublisher.publish(
-                orderOutboxMessage = it,
-                outboxCallback = orderOutboxHelper::updateOutboxMessage
-            )
             return true
         } ?: return false
     }

@@ -28,10 +28,10 @@ spring:
       data-locations: classpath:init-data.sql
 
 payment-service:
-  payment-request-topic-name: payment-request
-  payment-response-topic-name: payment-response
-  outbox-scheduler-fixed-rate: 10000
-  outbox-scheduler-initial-delay: 10000
+  payment-request-topic-name: debezium.order.payment_outbox
+  payment-response-topic-name: debezium.payment.order_outbox
+#  outbox-scheduler-fixed-rate: 10000
+#  outbox-scheduler-initial-delay: 10000
 
 kafka-config:
   bootstrap-servers: localhost:19092, localhost:29092, localhost:39092
@@ -58,9 +58,9 @@ kafka-consumer-config:
   auto-offset-reset: earliest
   specific-avro-reader-key: specific.avro.reader
   specific-avro-reader: true
-  batch-listener: true
+  batch-listener: false
   auto-startup: true
-  concurrency-level: 3
+  concurrency-level: 1
   session-timeout-ms: 10000
   heartbeat-interval-ms: 3000
   max-poll-interval-ms: 300000

@@ -2,7 +2,7 @@ package com.food.ordering.system.order.service.messaging.listener.kafka;
 
 import com.food.ordering.system.kafka.consumer.KafkaConsumer;
 import com.food.ordering.system.kafka.order.avro.model.CustomerAvroModel;
-import com.food.ordering.system.order.service.domain.ports.output.message.publisher.customer.CustomerMessageListener;
+import com.food.ordering.system.order.service.domain.ports.input.message.listener.customer.CustomerMessageListener;
 import com.food.ordering.system.order.service.messaging.mapper.OrderMessagingDataMapper;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;

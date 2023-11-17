@@ -10,9 +10,9 @@ import com.food.ordering.system.order.service.domain.entity.*
 import com.food.ordering.system.order.service.domain.event.OrderCancelledEvent
 import com.food.ordering.system.order.service.domain.event.OrderCreatedEvent
 import com.food.ordering.system.order.service.domain.event.OrderPaidEvent
-import com.food.ordering.system.order.service.domain.outbox.model.approval.OrderApprovalEventPayload
-import com.food.ordering.system.order.service.domain.outbox.model.approval.OrderApprovalEventProduct
-import com.food.ordering.system.order.service.domain.outbox.model.payment.OrderPaymentEventPayload
+import com.food.ordering.system.domain.event.payload.OrderApprovalEventPayload
+import com.food.ordering.system.domain.event.payload.OrderApprovalEventProduct
+import com.food.ordering.system.domain.event.payload.OrderPaymentEventPayload
 import com.food.ordering.system.order.service.domain.valueobject.OrderItemId
 import com.food.ordering.system.order.service.domain.valueobject.StreetAddress
 import org.springframework.stereotype.Component
@@ -82,13 +82,17 @@ class OrderDataMapper {
         )
     }
 
-    fun orderCreatedEventToOrderPaymentEventPayload(orderCreatedEvent: OrderCreatedEvent): OrderPaymentEventPayload {
+    fun orderCreatedEventToOrderPaymentEventPayload(
+        orderCreatedEvent: OrderCreatedEvent,
+        sagaId: String,
+        ): OrderPaymentEventPayload {
         return OrderPaymentEventPayload(
             customerId = orderCreatedEvent.order.customerId.value.toString(),
-            orderId = orderCreatedEvent.order.id.value.toString(),
             price = orderCreatedEvent.order.price.amount,
             createdAt = orderCreatedEvent.createdAt,
-            paymentOrderStatus = PaymentOrderStatus.PENDING.name
+            paymentOrderStatus = PaymentOrderStatus.PENDING.name,
+            orderId = orderCreatedEvent.order.id.value.toString(),
+            sagaId = sagaId,
         )
     }
 
@@ -108,13 +112,18 @@ class OrderDataMapper {
         )
     }
 
-    fun orderCancelledEventToOrderPaymentEventPayload(orderCancelledEvent: OrderCancelledEvent): OrderPaymentEventPayload =
+    fun orderCancelledEventToOrderPaymentEventPayload(
+        orderCancelledEvent: OrderCancelledEvent,
+        sagaId: String,
+    ): OrderPaymentEventPayload =
         OrderPaymentEventPayload(
-            orderId = orderCancelledEvent.order.id.value.toString(),
+            id = orderCancelledEvent.order.id.value.toString(),
             customerId = orderCancelledEvent.order.customerId.value.toString(),
             price = orderCancelledEvent.order.price.amount,
             createdAt = orderCancelledEvent.createdAt,
             paymentOrderStatus = PaymentOrderStatus.CANCELLED.name,
+            orderId = orderCancelledEvent.order.id.value.toString(),
+            sagaId = sagaId,
         )
 
     fun customerModelToCustomer(customerModel: CustomerModel): Customer = Customer(

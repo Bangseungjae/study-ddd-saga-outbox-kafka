@@ -14,6 +14,8 @@ dependencies {
     api(project(":common:common-application"))
     api(project(":common:common-domain"))
     api(project(":order-service:order-domain:order-domain-core"))
+    api(project(":common:common-messaging"))
+
 
     implementation("org.springframework.boot:spring-boot-starter-json")
 
