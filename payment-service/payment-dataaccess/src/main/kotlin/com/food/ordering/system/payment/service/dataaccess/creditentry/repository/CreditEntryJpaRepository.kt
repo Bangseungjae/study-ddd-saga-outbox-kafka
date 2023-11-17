@@ -10,6 +10,5 @@ import java.util.UUID
 @Repository
 interface CreditEntryJpaRepository : JpaRepository<CreditEntryEntity, UUID> {
 
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
     fun findByCustomerId(customerId: UUID): CreditEntryEntity?
 }

@@ -138,6 +138,11 @@ class PaymentRequestKafkaListener(
             } catch (e: PaymentNotFoundException) {
                 //NO-OP for PaymentNotFoundException
                 logger.error("No payment found for order id: ${orderPaymentEventPayload.orderId}")
+            } catch (e: Exception) {
+                throw PaymentApplicationServiceException(
+                    "Throwing DataAccessException in " +
+                            "PaymentRequestKafkaListener: ${e.message}"
+                )
             }
         }
     }

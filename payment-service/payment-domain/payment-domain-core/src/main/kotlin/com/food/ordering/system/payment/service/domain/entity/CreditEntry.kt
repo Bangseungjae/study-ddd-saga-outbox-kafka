@@ -9,6 +9,7 @@ class CreditEntry(
     creditEntryId: CreditEntryId,
     val customerId: CustomerId,
     var totalCreditAmount: Money,
+    val version: Int,
 ) : BaseEntity<CreditEntryId>(creditEntryId) {
 
     fun addCreditAmount(amount: Money) {

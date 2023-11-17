@@ -8,4 +8,6 @@ interface CreditEntryRepository {
     fun save(creditEntry: CreditEntry): CreditEntry
 
     fun findByCustomerId(customerId: CustomerId): CreditEntry?
+
+    fun detach(customerId: CustomerId)
 }

@@ -32,10 +32,19 @@ class PaymentRequestHelper(
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     @Transactional
-    fun persistPayment(paymentRequest: PaymentRequest) {
+    fun persistPayment(paymentRequest: PaymentRequest): Boolean {
+        if (isOutboxMessageProcessedForPayment(
+                paymentRequest = paymentRequest,
+                paymentStatus = PaymentStatus.COMPLETED,
+            )
+        ) {
+            logger.info("An outbox message with saga id: ${paymentRequest.sagaId} is already saved to database!")
+            return true
+        }
+
         logger.info("Received payment complete event for order id: ${paymentRequest.orderId}")
         val payment = paymentDataMapper.paymentRequestModelToPayment(paymentRequest)
-        val creditEntry: CreditEntry = getCreditEntry(CustomerId(UUID.fromString(paymentRequest.customerId)))
+        var creditEntry: CreditEntry = getCreditEntry(CustomerId(UUID.fromString(paymentRequest.customerId)))
         val creditHistories: MutableList<CreditHistory> = getCreditHistory(payment.customerId)
         val failureMessages = mutableListOf<String>()
         val paymentEvent: PaymentEvent = paymentDomainService.validateAndInitiatePayment(
@@ -44,27 +53,56 @@ class PaymentRequestHelper(
             creditHistories = creditHistories,
             failureMessages = failureMessages,
         )
-        persistDbObjects(
-            payment = payment,
+        return persistentIfSucceeded(
             failureMessages = failureMessages,
             creditEntry = creditEntry,
+            payment = payment,
             creditHistories = creditHistories,
-        )
-
-        orderOutboxHelper.saveOrderOutboxMessage(
-            orderEventPayload = paymentDataMapper.paymentEventToOrderEventPayload(paymentEvent),
-            paymentStatus = paymentEvent.payment.paymentStatus,
-            outboxStatus = OutboxStatus.STARTED,
-            sagaId = UUID.fromString(paymentRequest.sagaId),
+            paymentEvent = paymentEvent,
+            paymentRequest = paymentRequest,
         )
     }
 
+    private fun persistentIfSucceeded(
+        failureMessages: MutableList<String>,
+        creditEntry: CreditEntry,
+        payment: Payment,
+        creditHistories: MutableList<CreditHistory>,
+        paymentEvent: PaymentEvent,
+        paymentRequest: PaymentRequest,
+    ): Boolean {
+        var creditEntry1 = creditEntry
+        var isSucceeded = true
+        if (failureMessages.isNotEmpty()) {
+            val version = creditEntry1.version
+            creditEntryRepository.detach(payment.customerId) // Persistent Context에서 제거
+            creditEntry1 = getCreditEntry(payment.customerId)
+            isSucceeded = version == creditEntry1.version
+        }
+        if (isSucceeded) {
+            persistDbObjects(
+                payment = payment,
+                failureMessages = failureMessages,
+                creditEntry = creditEntry1,
+                creditHistories = creditHistories,
+            )
+
+            orderOutboxHelper.saveOrderOutboxMessage(
+                orderEventPayload = paymentDataMapper.paymentEventToOrderEventPayload(paymentEvent),
+                paymentStatus = paymentEvent.payment.paymentStatus,
+                outboxStatus = OutboxStatus.STARTED,
+                sagaId = UUID.fromString(paymentRequest.sagaId),
+            )
+        }
+        return isSucceeded
+    }
+
     @Transactional
-    fun persistCancelPayment(paymentRequest: PaymentRequest) {
+    fun persistCancelPayment(paymentRequest: PaymentRequest): Boolean {
 
         if (isOutboxMessageProcessedForPayment(paymentRequest, PaymentStatus.CANCELLED)) {
             logger.info("An outbox message with saga id: ${paymentRequest.sagaId} is already saved to database!")
-            return
+            return true
         }
 
         logger.info("Received payment rollback event for order id: ${paymentRequest.orderId}")
@@ -81,18 +119,14 @@ class PaymentRequestHelper(
             creditHistories = creditHistories,
             failureMessages = failureMessages,
         )
-        persistDbObjects(
-            payment = payment,
+
+        return persistentIfSucceeded(
             failureMessages = failureMessages,
             creditEntry = creditEntry,
+            payment = payment,
             creditHistories = creditHistories,
-        )
-
-        orderOutboxHelper.saveOrderOutboxMessage(
-            orderEventPayload = paymentDataMapper.paymentEventToOrderEventPayload(paymentEvent),
-            paymentStatus = paymentEvent.payment.paymentStatus,
-            outboxStatus = OutboxStatus.STARTED,
-            sagaId = UUID.fromString(paymentRequest.sagaId),
+            paymentEvent = paymentEvent,
+            paymentRequest = paymentRequest,
         )
     }
 
@@ -135,7 +169,7 @@ class PaymentRequestHelper(
             paymentStatus = paymentStatus,
         )?.let {
             return true
-        } ?:run {
+        } ?: run {
             return false
         }
     }

@@ -13,11 +13,13 @@ class CreditEntryDataAccessMapper {
         creditEntryId = CreditEntryId(creditEntryEntity.id),
         customerId = CustomerId(creditEntryEntity.customerId),
         totalCreditAmount = Money(creditEntryEntity.totalCreditAmount),
+        version = creditEntryEntity.version,
     )
 
     fun creditEntryToCreditEntryEntity(creditEntry:  CreditEntry): CreditEntryEntity = CreditEntryEntity(
         id = creditEntry.id.value,
         customerId = creditEntry.customerId.value,
         totalCreditAmount = creditEntry.totalCreditAmount.amount,
+        version = creditEntry.version,
     )
 }
