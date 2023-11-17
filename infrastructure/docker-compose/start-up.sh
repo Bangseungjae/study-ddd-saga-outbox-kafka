@@ -8,11 +8,12 @@ docker-compose -f common.yml -f zookeeper.yml up -d
 # check zookeeper health
 zookeeperCheckResult=$(echo ruok | nc localhost 2181)
 
-while [[ ! $zookeeperCheckResult == "imok" ]]; do
-  >&2 echo "Zookeeper is not running yet!"
-  sleep 2
-  zookeeperCheckResult=$(echo ruok | nc localhost 2181)
-done
+#while [[ ! $zookeeperCheckResult == "imok" ]]; do
+#  >&2 echo "Zookeeper is not running yet!"
+#  sleep 2
+#  zookeeperCheckResult=$(echo ruok | nc localhost 2181)
+#done
+sleep 10
 
 echo "Starting Kafka cluster"
 
