@@ -10,3 +10,4 @@ remove jpa lock
 Change Data Capture Optimistic Locking:
 500 records -> 14 secs
 1000 records -> 31 secs
+1500 records -> 48 secs
