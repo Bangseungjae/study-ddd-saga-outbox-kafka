@@ -1,0 +1,12 @@
+Change Data Capture Pessimistic Locking:
+500 records -> 13 secs
+1000 records -> 25 secs
+
+
+remove jpa lock
+500 records -> 12 secs
+
+싱글 어플리케이션에서는 이러하다. 그러나 서버를 스케일아웃 하면 낙관적 락이 더 빠를것.
+Change Data Capture Optimistic Locking:
+500 records -> 14 secs
+1000 records -> 31 secs
