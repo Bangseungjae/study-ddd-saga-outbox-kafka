@@ -7,7 +7,7 @@ import com.food.ordering.system.order.service.domain.ports.output.repository.Res
 import org.springframework.stereotype.Component
 
 @Component
-class RestaurantRepositoryImpl(
+private class RestaurantRepositoryImpl(
     private val restaurantJpaRepository: RestaurantJpaRepository,
     private val restaurantDataAccessMapper: RestaurantDataAccessMapper,
 ) : RestaurantRepository{

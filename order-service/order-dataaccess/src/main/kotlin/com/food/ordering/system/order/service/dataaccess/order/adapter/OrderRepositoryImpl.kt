@@ -11,7 +11,7 @@ import com.food.ordering.system.order.service.domain.valueobject.TrackingId
 import org.springframework.stereotype.Component
 
 @Component
-class OrderRepositoryImpl(
+private class OrderRepositoryImpl(
     private val orderJpaRepository: OrderJpaRepository,
     private val orderDataAccessMapper: OrderDataAccessMapper
 ) : OrderRepository {

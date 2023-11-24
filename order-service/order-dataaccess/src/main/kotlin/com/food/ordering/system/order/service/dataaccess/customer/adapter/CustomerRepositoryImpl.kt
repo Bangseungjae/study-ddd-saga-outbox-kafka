@@ -9,7 +9,7 @@ import java.lang.IllegalArgumentException
 import java.util.*
 
 @Component
-class CustomerRepositoryImpl(
+private class CustomerRepositoryImpl(
     private val customerJpaRepository: CustomerJpaRepository,
     private val customerDataAccessMapper: CustomerDataAccessMapper,
 ) : CustomerRepository {

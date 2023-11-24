@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 @Service
-class RestaurantApprovalMessageListenerImpl(
+private class RestaurantApprovalMessageListenerImpl(
     private val orderApprovalSaga: OrderApprovalSaga,
 ) : RestaurantApprovalResponseMessageListener {
 

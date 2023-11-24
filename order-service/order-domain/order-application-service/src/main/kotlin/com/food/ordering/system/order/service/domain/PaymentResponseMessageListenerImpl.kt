@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 @Service
-class PaymentResponseMessageListenerImpl(
+private class PaymentResponseMessageListenerImpl(
     private val orderPaymentSaga: OrderPaymentSaga,
 ) : PaymentResponseMessageListener {
 

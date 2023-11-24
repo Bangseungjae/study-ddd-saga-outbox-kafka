@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component
 import java.util.*
 
 @Component
-class PaymentOutboxRepositoryImpl(
+private class PaymentOutboxRepositoryImpl(
     private val paymentOutboxJpaRepository: PaymentOutboxJpaRepository,
 ) : PaymentOutboxRepository {
     override fun save(orderPaymentOutboxMessage: OrderPaymentOutboxMessage): OrderPaymentOutboxMessage =

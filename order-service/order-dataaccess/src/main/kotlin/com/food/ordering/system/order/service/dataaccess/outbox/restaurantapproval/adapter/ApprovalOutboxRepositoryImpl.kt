@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component
 import java.util.*
 
 @Component
-class ApprovalOutboxRepositoryImpl(
+private class ApprovalOutboxRepositoryImpl(
     private val approvalOutboxJpaRepository: ApprovalOutboxJpaRepository,
 ) : ApprovalOutboxRepository {
     override fun save(orderApprovalOutboxMessage: OrderApprovalOutboxMessage): OrderApprovalOutboxMessage {

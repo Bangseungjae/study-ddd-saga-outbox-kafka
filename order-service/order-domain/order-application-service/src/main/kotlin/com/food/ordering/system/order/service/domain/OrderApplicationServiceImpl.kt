@@ -9,12 +9,10 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 @Service
-class OrderApplicationServiceImpl(
+ private class OrderApplicationServiceImpl (
     private val orderCreateCommandHandler: OrderCreateCommandHandler,
     private val orderTrackCommandHandler: OrderTrackCommandHandler,
 ) : OrderApplicationService {
-
-    val logger = LoggerFactory.getLogger(this.javaClass)
 
     override fun createOrder(createOrderCommand: CreateOrderCommand): CreateOrderResponse {
         return orderCreateCommandHandler.createOrder(createOrderCommand)
